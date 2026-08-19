@@ -1,5 +1,5 @@
 ---
-name: icFalcon-nextjs
+name: icFalcon-nextjsStandard
 description: Next.js App Router conventions for IcFalcon static export frontend.
 ---
 

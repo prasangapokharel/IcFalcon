@@ -4,11 +4,10 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 FRONTEND="$ROOT/frontend"
 
-cd "$FRONTEND"
+# shellcheck source=progress.sh
+source "$ROOT/ops/scripts/progress.sh"
 
-npm install
-
-if [[ ! -f postcss.config.mjs ]]; then
+setup_postcss() {
   npm install -D tailwindcss @tailwindcss/postcss postcss
   cat > postcss.config.mjs <<'EOF'
 /** @type {import('postcss-load-config').Config} */
@@ -20,14 +19,19 @@ const config = {
 
 export default config
 EOF
+}
+
+cd "$FRONTEND"
+
+prog_run "Installing frontend packages" npm install
+
+if [[ ! -f postcss.config.mjs ]]; then
+  prog_run "Configuring PostCSS + Tailwind" setup_postcss
 fi
 
 if [[ ! -f components.json ]]; then
-  npx shadcn@latest init --preset bbVJxYW -y
+  prog_run "Initializing shadcn/ui" npx shadcn@latest init --preset bbVJxYW -y
 fi
 
-npx shadcn@latest add --all -y
-
-npm run build
-
-echo "Frontend ready (Tailwind + shadcn + static export in out/)."
+prog_run "Installing shadcn components" npx shadcn@latest add --all -y
+prog_run "Building frontend" npm run build

@@ -18,21 +18,38 @@ ROOT="$(resolve_root)"
 CONFIG="${FALCON_CONFIG:-$ROOT/falcon.yaml}"
 BACKEND_DIR="$ROOT/$(grep -E '^backend_dir:' "$CONFIG" 2>/dev/null | head -1 | sed 's/backend_dir: *//' || echo backend)"
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-CYAN='\033[0;36m'
-DIM='\033[2m'
-NC='\033[0m'
+if [[ -t 1 ]]; then
+  RED=$'\033[0;31m'
+  GREEN=$'\033[0;32m'
+  CYAN=$'\033[0;36m'
+  DIM=$'\033[2m'
+  NC=$'\033[0m'
+else
+  RED=''
+  GREEN=''
+  CYAN=''
+  DIM=''
+  NC=''
+fi
+BANNER_FILE="$ROOT/ops/cmd/prefixAscii.txt"
+
+print_banner() {
+  [[ -f "$BANNER_FILE" ]] || return 0
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    printf '%s%s%s\n' "$CYAN" "$line" "$NC"
+  done < "$BANNER_FILE"
+}
 
 usage() {
+  print_banner
+  printf '%sInternet Computer app framework%s\n\n' "$DIM" "$NC"
   cat <<EOF
-${CYAN}falcon${NC} — IcFalcon ops CLI
-
 Usage:
   falcon <command> [--local] [args...]
 
 ${GREEN}Setup${NC}
-  s:init          Setup mops + moc toolchain
+  s:init          Full local setup + dev server
   r:start         Start local replica
   r:stop          Stop local replica
 
@@ -91,8 +108,8 @@ Install global: ./ops/install.sh
 EOF
 }
 
-step() { echo -e "\n${GREEN}==>${NC} $1"; }
-fail() { echo -e "${RED}error:${NC} $1" >&2; exit 1; }
+step() { printf '\n%s▸%s %s\n' "$GREEN" "$NC" "$1"; }
+fail() { printf '%serror:%s %s\n' "$RED" "$NC" "$1" >&2; exit 1; }
 
 yaml_value() {
   local key="$1"
@@ -187,6 +204,7 @@ run_command() {
 
   local network_label="mainnet"
   [[ "$network_flag" == "--network local" ]] && network_label="local"
+  print_banner
   step "$resolved ($network_label)"
 
   export FALCON_ROOT="$ROOT"
@@ -216,7 +234,9 @@ run_command() {
     [[ -z "$step_line" ]] && continue
     local cmd
     cmd="$(expand_template "$step_line" "$network_flag")"
-    echo "$cmd"
+    if [[ "${FALCON_VERBOSE:-0}" == "1" ]]; then
+      printf '  %s%s\n' "$DIM" "$cmd"
+    fi
     if [[ "$cmd" == dfx* ]]; then
       (cd "$BACKEND_DIR" && bash -c "$cmd")
     else
@@ -252,6 +272,7 @@ main() {
       exit 0
       ;;
     list)
+      print_banner
       grep -E '^  [a-z].*:$' "$CONFIG" | sed -E 's/^  ([^:]+):.*/\1/' | grep -v '^aliases$'
       exit 0
       ;;
@@ -259,6 +280,7 @@ main() {
       if [[ "${filtered_args[0]:-}" == "pkg" ]]; then
         export FALCON_ROOT="$ROOT"
         export FALCON_BACKEND_DIR="$BACKEND_DIR"
+        print_banner
         step "pkg:add"
         bash "$ROOT/ops/pkg-add.sh" "${filtered_args[1]:?usage: falcon add pkg <name>}"
         exit 0
@@ -269,6 +291,7 @@ main() {
       export FALCON_ROOT="$ROOT"
       export FALCON_BACKEND_DIR="$BACKEND_DIR"
       local pkg_name="${command#package:}"
+      print_banner
       step "pkg:add $pkg_name"
       bash "$ROOT/ops/pkg-add.sh" "$pkg_name"
       exit 0

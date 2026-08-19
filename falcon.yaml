@@ -13,13 +13,11 @@ commands:
 
   replica:start:
     confirm: false
-    steps:
-      - dfx start --background
+    script: ops/scripts/replica-start.sh
 
   replica:stop:
     confirm: false
-    steps:
-      - dfx stop
+    script: ops/scripts/replica-stop.sh
 
   # ── backend ────────────────────────────────────────
   backend:test:

@@ -1,4 +1,4 @@
-import { SetupCommand } from "@/components/home/SetupCommand"
+import { BackendStatus } from "@/components/home/BackendStatus"
 import Image from "next/image"
 
 export default function HomePage() {
@@ -14,7 +14,7 @@ export default function HomePage() {
           className="h-auto w-full max-w-xs drop-shadow-2xl sm:max-w-sm"
         />
 
-        <div className="flex w-full flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-4">
           <div className="flex flex-col gap-3">
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               Welcome to IcFalcon
@@ -23,8 +23,7 @@ export default function HomePage() {
               The Motoko framework for Internet Computer apps.
             </p>
           </div>
-
-          <SetupCommand />
+          <BackendStatus />
         </div>
       </div>
     </main>

@@ -7,9 +7,6 @@ Internet Computer app framework: Motoko backend, Next.js frontend, `falcon` ops 
 ```bash
 ./ops/install.sh
 falcon s:init
-falcon r:start
-falcon b:deploy --local
-falcon f:dev
 ```
 
 ## Scaffold a module
@@ -57,7 +54,11 @@ Read [`.agents/SKILLS.md`](.agents/SKILLS.md) first. Key skills:
 | Tests | `.agents/skills/testingStandard/SKILL.md` |
 | Endpoints | `.agents/skills/endpoints/SKILL.md` |
 | Write Motoko | `.agents/skills/motoko/writingMotoko/SKILL.md` |
-| Deploy | `.agents/skills/motoko/deployGuide/SKILL.md` |
+| Project setup | `.agents/skills/guide/projectSetupStandard/SKILL.md` |
+| Local deploy | `.agents/skills/guide/localDeployStandard/SKILL.md` |
+| Production deploy | `.agents/skills/guide/productionDeployStandard/SKILL.md` |
+| Release | `.agents/skills/guide/releaseStandard/SKILL.md` |
+| Deploy reference | `.agents/skills/motoko/deployGuide/SKILL.md` |
 | Ledger | `.agents/skills/motoko/ledgerIntegration/SKILL.md` |
 | Frontend | `.agents/skills/frontendStandard/SKILL.md` |
 | Logo / brand | `.agents/skills/logoStandard/SKILL.md` |
@@ -75,6 +76,12 @@ Read [`.agents/SKILLS.md`](.agents/SKILLS.md) first. Key skills:
 ├── testingStandard/
 ├── endpoints/
 ├── frontendStandard/
+├── logoStandard/
+├── guide/
+│   ├── projectSetupStandard/
+│   ├── localDeployStandard/
+│   ├── productionDeployStandard/
+│   └── releaseStandard/
 └── motoko/
     ├── writingMotoko/
     ├── testingMotoko/

@@ -5,6 +5,8 @@
 ```
 ops/
 ├── falcon                   CLI entry (linked by install.sh)
+├── cmd/
+│   └── prefixAscii.txt      CLI banner (shown on help + each command)
 ├── install.sh
 ├── make-feature.sh          falcon m:f
 ├── pkg-*.sh                 hub install/list/push

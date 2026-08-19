@@ -71,7 +71,7 @@ Setup installs every component automatically:
 falcon s:init
 ```
 
-Runs `npx shadcn@latest add --all` via `ops/scripts/setup-frontend.sh`.
+Runs `npx shadcn@latest add --all` via `ops/scripts/setup-frontend.sh`, then starts `npm run dev`.
 
 Manual add:
 
@@ -164,7 +164,7 @@ export function useFeatures() {
 
 Import: `@/hooks/<feature>/use<Name>`
 
-SWR reference: [`frontend/.agents/skills/swrOfficial/`](../../../frontend/.agents/skills/swrOfficial/)
+SWR reference: [`frontend/.agents/skills/swrOfficial/SKILL.md`](../../../frontend/.agents/skills/swrOfficial/SKILL.md)
 
 ---
 
@@ -248,3 +248,4 @@ Env: `frontend/.env.example` — `NEXT_PUBLIC_CANISTER_ID_APP`, `NEXT_PUBLIC_DFX
 | Full feature flow | [`../integrationStandard/SKILL.md`](../integrationStandard/SKILL.md) |
 | II auth | [`../motoko/internetIdentityAuth/SKILL.md`](../motoko/internetIdentityAuth/SKILL.md) |
 | Deploy / env | [`../motoko/deployGuide/frontend-connection.md`](../motoko/deployGuide/frontend-connection.md) |
+| Production deploy | [`../guide/productionDeployStandard/SKILL.md`](../guide/productionDeployStandard/SKILL.md) |

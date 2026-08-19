@@ -26,7 +26,11 @@ Task router for AI agents working in this repo. Read the skill that matches your
 | Upgrade / migration | [`migration/SKILL.md`](skills/migration/SKILL.md) |
 | Run tests | [`testingStandard/SKILL.md`](skills/testingStandard/SKILL.md) |
 | Write Motoko | [`motoko/writingMotoko/SKILL.md`](skills/motoko/writingMotoko/SKILL.md) |
-| Deploy | [`motoko/deployGuide/SKILL.md`](skills/motoko/deployGuide/SKILL.md) + `falcon b:deploy` |
+| Project setup | [`guide/projectSetupStandard/SKILL.md`](skills/guide/projectSetupStandard/SKILL.md) |
+| Local deploy | [`guide/localDeployStandard/SKILL.md`](skills/guide/localDeployStandard/SKILL.md) |
+| Production deploy | [`guide/productionDeployStandard/SKILL.md`](skills/guide/productionDeployStandard/SKILL.md) |
+| Release / ship | [`guide/releaseStandard/SKILL.md`](skills/guide/releaseStandard/SKILL.md) |
+| Deploy reference | [`motoko/deployGuide/SKILL.md`](skills/motoko/deployGuide/SKILL.md) |
 | Ledger / ICRC | [`motoko/ledgerIntegration/SKILL.md`](skills/motoko/ledgerIntegration/SKILL.md) |
 | Frontend | [`frontendStandard/SKILL.md`](skills/frontendStandard/SKILL.md) |
 | Logo / brand | [`logoStandard/SKILL.md`](skills/logoStandard/SKILL.md) |
@@ -47,6 +51,11 @@ Task router for AI agents working in this repo. Read the skill that matches your
 ├── endpoints/            # api/v1 mixin pattern
 ├── frontendStandard/     # Next.js, shadcn, services/hooks/lib
 ├── logoStandard/         # brand lockup, colors, typography
+├── guide/                # IcFalcon deploy + setup workflows
+│   ├── projectSetupStandard/
+│   ├── localDeployStandard/
+│   ├── productionDeployStandard/
+│   └── releaseStandard/
 └── motoko/               # Motoko language + ICP reference
     ├── writingMotoko/
     ├── testingMotoko/

@@ -17,6 +17,15 @@ alwaysApply: true
 | `deployGuide` | Building, deploying, upgrading — read `deployGuide/SKILL.md` first |
 | `buildAndTest`, `bumpPocketIc`, `bumpRustNightly` | Only inside the dfinity/motoko compiler repo |
 
+## IcFalcon guide skills (parent folder)
+
+| Skill | Path |
+|---|---|
+| Project setup | `../guide/projectSetupStandard/SKILL.md` |
+| Local deploy | `../guide/localDeployStandard/SKILL.md` |
+| Production deploy | `../guide/productionDeployStandard/SKILL.md` |
+| Release | `../guide/releaseStandard/SKILL.md` |
+
 ## IcFalcon project skills (parent folder)
 
 | Skill | Path |

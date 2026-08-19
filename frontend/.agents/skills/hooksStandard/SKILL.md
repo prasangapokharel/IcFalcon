@@ -39,6 +39,6 @@ export function useFeatures() {
 }
 ```
 
-SWR docs: [`../swrOfficial/`](../swrOfficial/)
+SWR docs: [`swrOfficial/SKILL.md`](../swrOfficial/SKILL.md)
 
 Master: [`.agents/skills/frontendStandard/SKILL.md`](../../../../.agents/skills/frontendStandard/SKILL.md)

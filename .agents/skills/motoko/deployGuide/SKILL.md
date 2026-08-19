@@ -9,6 +9,15 @@ description: >-
 
 Use the global `falcon` CLI (`ops/falcon` + `falcon.yaml`). Canister name: **`app`**.
 
+## Workflow skills (start here)
+
+| Task | Skill |
+|---|---|
+| First-time setup | [`../../guide/projectSetupStandard/SKILL.md`](../../guide/projectSetupStandard/SKILL.md) |
+| Local deploy | [`../../guide/localDeployStandard/SKILL.md`](../../guide/localDeployStandard/SKILL.md) |
+| Production deploy | [`../../guide/productionDeployStandard/SKILL.md`](../../guide/productionDeployStandard/SKILL.md) |
+| Release checklist | [`../../guide/releaseStandard/SKILL.md`](../../guide/releaseStandard/SKILL.md) |
+
 ## Quick start (local)
 
 ```bash
