@@ -3,42 +3,55 @@
 ## Architecture
 
 ```
-./ops/install.sh     →  falcon CLI (~/.local/bin)
-falcon s:init        →  backend mops + frontend npm/shadcn + static build
-falcon r:start       →  local ICP replica
-falcon b:deploy      →  canister on replica or mainnet
+./ops/install.sh  →  falcon CLI on PATH
+falcon s:init     →  backend + frontend setup
+falcon r:start    →  local ICP replica
+falcon b:deploy   →  canister deploy
 ```
 
-IcFalcon is a clone-and-own framework: one Motoko canister (`app`), static Next.js frontend, global `falcon` CLI.
+IcFalcon ships one Motoko canister (`app`), a static Next.js frontend, and the global `falcon` CLI.
 
 ## Use case
 
-You need a production-shaped ICP app without boilerplate:
+You want a production-shaped ICP app without writing boilerplate:
 
-- Layered Motoko backend (api → service → repo → storage)
+- Layered Motoko backend
 - Internet Identity on the frontend
-- Hub packages (`falcon add pkg wallet`)
-- Scaffold new modules (`falcon m:f Order`)
+- Hub packages and module scaffolding
 
 ## Guide
+
+**Clone**
 
 ```bash
 git clone https://github.com/prasangapokharel/IcFalcon.git
 cd IcFalcon
+```
+
+**Install CLI**
+
+```bash
 ./ops/install.sh
+```
+
+**Initialize**
+
+```bash
 falcon s:init
+```
+
+**Run locally**
+
+```bash
 falcon r:start --local
 falcon b:deploy --local
 ```
 
-Verify:
+**Verify**
 
 ```bash
 falcon b:test --local
 falcon c:ping --local
-cd frontend && npm run build
 ```
-
-Serve the welcome UI from `frontend/out/` after build, or use `falcon f:dev` while developing.
 
 Next: [backend](../backend/README.md) · [frontend](../frontend/README.md)

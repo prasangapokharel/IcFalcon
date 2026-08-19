@@ -11,47 +11,69 @@
 
 <p align="center">
   <a href="docs/gettingStarted/README.md">Getting started</a> ·
-  <a href="docs/README.md">Docs</a> ·
-  <a href="ops/docs/commands.md">Commands</a> ·
-  <a href="https://github.com/prasangapokharel/icp-hub">Package hub</a>
+  <a href="docs/README.md">Documentation</a> ·
+  <a href="ops/docs/commands.md">CLI reference</a> ·
+  <a href="https://github.com/prasangapokharel/IcFalcon/releases">Releases</a>
 </p>
 
 ---
 
-## What you get
+## Overview
 
-| Layer | Stack |
+IcFalcon is an open-source starter framework for building Internet Computer applications. You get a production-shaped Motoko canister, a Next.js frontend with shadcn/ui, and a global `falcon` CLI for scaffolding, building, and deploying.
+
+| Layer | Technology |
 |---|---|
-| Backend | Motoko · `mo:core` · layered canister (`api` → `service` → `repo` → `storage`) |
+| Backend | Motoko · `mo:core` · `api` → `service` → `repository` → `storage` |
 | Frontend | Next.js · shadcn/ui · Internet Identity · static export |
-| Tooling | `falcon` CLI — scaffold, build, deploy, hub packages |
+| Tooling | `falcon` CLI · module scaffolds · [icp-hub](https://github.com/prasangapokharel/icp-hub) packages |
 
 ---
 
 ## Prerequisites
 
-| Tool | Purpose |
-|---|---|
-| [dfx](https://internetcomputer.org/docs/current/developer-docs/getting-started/install) | Local replica & deploy |
-| [mops](https://mops.one) | Motoko packages |
-| Node.js 20+ | Frontend build |
-| bash | `falcon` CLI |
+Install these before you begin:
+
+- [dfx](https://internetcomputer.org/docs/current/developer-docs/getting-started/install) — local replica and deployment
+- [mops](https://mops.one) — Motoko package manager
+- **Node.js 20+** — frontend toolchain
+- **bash** — required by the `falcon` CLI
 
 ---
 
-## Quick start
+## Installation
+
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/prasangapokharel/IcFalcon.git
 cd IcFalcon
-
-./ops/install.sh          # links falcon → ~/.local/bin
-falcon s:init             # mops + moc + npm + shadcn + frontend build
-falcon r:start --local    # start local replica
-falcon b:deploy --local   # deploy app canister
 ```
 
-Verify:
+**2. Install the CLI**
+
+```bash
+./ops/install.sh
+```
+
+This registers `falcon` on your PATH (`~/.local/bin`). Ensure that directory is in your shell `PATH`.
+
+**3. Initialize the project**
+
+```bash
+falcon s:init
+```
+
+Installs Motoko dependencies, pins the compiler, sets up the frontend, and builds the static UI.
+
+**4. Start local development**
+
+```bash
+falcon r:start --local
+falcon b:deploy --local
+```
+
+**5. Verify**
 
 ```bash
 falcon b:test --local
@@ -59,87 +81,91 @@ falcon c:ping --local
 falcon p:check --local
 ```
 
-Open the built welcome UI from `frontend/out/` after deploy, or run `falcon f:dev` while developing.
+After deploy, serve `frontend/out/` or use `falcon f:dev` during active frontend work.
 
 ---
 
-## Common commands
+## CLI reference
 
-| Command | What it does |
+| Command | Description |
 |---|---|
-| `falcon s:init` | Full setup — backend toolchain + frontend + UI components |
-| `falcon m:f Order` | Scaffold a module (backend + frontend) |
-| `falcon add pkg wallet` | Install a package from [icp-hub](https://github.com/prasangapokharel/icp-hub) |
+| `falcon s:init` | Project setup (toolchain + frontend) |
+| `falcon m:f <Name>` | Scaffold a full module |
+| `falcon add pkg <name>` | Install a hub package |
 | `falcon b:test --local` | Build the canister |
-| `falcon b:deploy --local` | Build + upgrade deploy |
-| `falcon p:check --local` | Backend + frontend production build |
-| `falcon p:list` | Browse hub packages |
+| `falcon b:deploy --local` | Deploy to local replica |
+| `falcon p:check --local` | Full backend + frontend build |
+| `falcon p:list` | List available hub packages |
 
-Append `--local` for the local replica. Omit it for mainnet (deploy prompts for confirmation).
+Use `--local` for the local replica. Omit it for mainnet; deploy will ask for confirmation.
 
-Full reference: [ops/docs/commands.md](ops/docs/commands.md)
+Complete list: [ops/docs/commands.md](ops/docs/commands.md)
 
 ---
 
-## Project layout
+## Project structure
 
 ```
 IcFalcon/
-├── backend/          Motoko canister (app)
-├── frontend/         Next.js + shadcn UI
-├── docs/             Guides (architecture · use case · how-to)
-├── ops/              falcon CLI + templates
-├── .agents/          AI agent skills
-├── falcon.yaml       CLI config
-└── AGENTS.md         Contributor map
+├── backend/       Motoko canister
+├── frontend/      Next.js application
+├── docs/          Architecture and guides
+├── ops/           CLI and scaffolds
+├── .agents/       Agent skills for contributors
+└── falcon.yaml    CLI configuration
 ```
 
 ---
 
 ## Documentation
 
-| Guide | Description |
+| Topic | Guide |
 |---|---|
-| [Getting started](docs/gettingStarted/README.md) | Install → init → deploy |
-| [Backend](docs/backend/README.md) | Canister layers & modules |
-| [Frontend](docs/frontend/README.md) | UI, services, II auth |
-| [Ops / CLI](docs/ops/README.md) | `falcon` commands |
-| [Packages](docs/packages/README.md) | icp-hub install |
-| [Agents](docs/agents/README.md) | AI coding skills |
+| First deploy | [Getting started](docs/gettingStarted/README.md) |
+| Canister design | [Backend](docs/backend/README.md) |
+| UI and auth | [Frontend](docs/frontend/README.md) |
+| CLI and templates | [Ops](docs/ops/README.md) |
+| Hub packages | [Packages](docs/packages/README.md) |
 
 ---
 
-## Scaffold a feature
+## Scaffold a module
 
 ```bash
 falcon m:f Product
 ```
 
-Creates Motoko storage → repository → validator → service → API, wires `main.mo`, and adds frontend service + panel.
+Generates backend layers, wires `main.mo`, and adds matching frontend service and panel files.
 
 ---
 
-## Package hub
+## Contributing
 
-62 Motoko packages at **[github.com/prasangapokharel/icp-hub](https://github.com/prasangapokharel/icp-hub)**.
+We welcome issues and pull requests.
+
+1. Fork the repository and create a feature branch from `main`.
+2. Follow existing patterns — see [AGENTS.md](AGENTS.md) and [docs/agents/README.md](docs/agents/README.md).
+3. Run checks before opening a PR:
 
 ```bash
-falcon p:list
-falcon add pkg crud
-falcon add pkg dao
-falcon p:ls
+falcon b:test --local
+falcon p:check --local
 ```
+
+4. Open a pull request with a clear description of the change.
+
+For hub packages, contribute to [icp-hub](https://github.com/prasangapokharel/icp-hub) separately.
 
 ---
 
-## Safety
+## Security
 
-- Mainnet deploy requires an interactive terminal confirm
-- Use `--mode=upgrade` for production upgrades
-- Never commit `.env`, `*.pem`, or `identity.json`
+- Mainnet deploy requires interactive confirmation in the terminal.
+- Always upgrade production canisters with `--mode=upgrade`.
+- Do not commit `.env`, `*.pem`, or `identity.json`.
 
 ---
 
 ## License
 
-See repository license file. Hub packages follow their own licenses on icp-hub.
+Source code in this repository is provided as-is for use and modification. Hub packages are licensed per their entries on [icp-hub](https://github.com/prasangapokharel/icp-hub).
