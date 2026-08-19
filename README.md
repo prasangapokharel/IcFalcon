@@ -48,7 +48,6 @@ Install these before you begin:
 ```bash
 npm create icfalcon@latest my-app
 cd my-app
-./ops/install.sh
 falcon s:init
 ```
 

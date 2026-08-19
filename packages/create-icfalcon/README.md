@@ -16,9 +16,10 @@ npx create-icfalcon my-app
 
 ```bash
 cd my-app
-./ops/install.sh
 falcon s:init
 ```
+
+`create-icfalcon` runs `./ops/install.sh` automatically after scaffold.
 
 Open http://localhost:3000
 

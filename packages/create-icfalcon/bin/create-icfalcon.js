@@ -14,7 +14,7 @@ function fail(message) {
 }
 
 function run(command, cwd) {
-  execSync(command, { stdio: "inherit", cwd })
+  execSync(command, { stdio: "inherit", cwd, shell: true })
 }
 
 if (!projectName || projectName.startsWith("-")) {
@@ -40,11 +40,18 @@ if (fs.existsSync(gitDir)) {
   fs.rmSync(gitDir, { recursive: true, force: true })
 }
 
+process.stdout.write("\n  Installing falcon CLI...\n\n")
+
+try {
+  run("bash ops/install.sh", target)
+} catch {
+  fail("./ops/install.sh failed — run it manually inside your project")
+}
+
 process.stdout.write(`
   ✓ IcFalcon ready
 
   cd ${projectName}
-  ./ops/install.sh
   falcon s:init
 
   https://github.com/prasangapokharel/IcFalcon
