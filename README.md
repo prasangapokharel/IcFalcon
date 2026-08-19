@@ -43,6 +43,32 @@ Install these before you begin:
 
 ## Installation
 
+**Option A — npm (no manual clone)**
+
+```bash
+npm create icfalcon@latest my-app
+cd my-app
+./ops/install.sh
+falcon s:init
+```
+
+**Option B — git clone**
+
+```bash
+git clone https://github.com/prasangapokharel/IcFalcon.git
+cd IcFalcon
+./ops/install.sh
+falcon s:init
+```
+
+This registers `falcon` on your PATH (`~/.local/bin`). Ensure that directory is in your shell `PATH`.
+
+`falcon s:init` installs dependencies, deploys locally, and starts the dev server at http://localhost:3000.
+
+---
+
+### Manual clone steps
+
 **1. Clone the repository**
 
 ```bash
@@ -56,24 +82,13 @@ cd IcFalcon
 ./ops/install.sh
 ```
 
-This registers `falcon` on your PATH (`~/.local/bin`). Ensure that directory is in your shell `PATH`.
-
 **3. Initialize the project**
 
 ```bash
 falcon s:init
 ```
 
-Installs Motoko dependencies, pins the compiler, sets up the frontend, and builds the static UI.
-
-**4. Start local development**
-
-```bash
-falcon r:start --local
-falcon b:deploy --local
-```
-
-**5. Verify**
+**4. Verify**
 
 ```bash
 falcon b:test --local
@@ -81,7 +96,7 @@ falcon c:ping --local
 falcon p:check --local
 ```
 
-After deploy, serve `frontend/out/` or use `falcon f:dev` during active frontend work.
+After `falcon s:init`, the dev server runs at http://localhost:3000.
 
 ---
 

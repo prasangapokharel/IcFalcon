@@ -1,0 +1,37 @@
+{
+  "name": "create-icfalcon",
+  "version": "0.1.0",
+  "description": "Scaffold an IcFalcon Internet Computer app in one command — Motoko backend, Next.js frontend, falcon CLI.",
+  "license": "MIT",
+  "author": "prasangapokharel",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prasangapokharel/IcFalcon.git",
+    "directory": "packages/create-icfalcon"
+  },
+  "homepage": "https://github.com/prasangapokharel/IcFalcon#readme",
+  "bugs": {
+    "url": "https://github.com/prasangapokharel/IcFalcon/issues"
+  },
+  "keywords": [
+    "icfalcon",
+    "icp",
+    "internet-computer",
+    "motoko",
+    "dfx",
+    "nextjs",
+    "create-app",
+    "scaffold",
+    "canister"
+  ],
+  "bin": {
+    "create-icfalcon": "bin/create-icfalcon.js"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
