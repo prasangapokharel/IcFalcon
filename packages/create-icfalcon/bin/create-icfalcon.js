@@ -12,6 +12,7 @@ const projectName = args[0]
 const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
 function fail(message) {
+  stopSpinner()
   process.stderr.write(`\n  error: ${message}\n\n`)
   process.exit(1)
 }
@@ -19,6 +20,44 @@ function fail(message) {
 function hasCommand(name) {
   const result = spawnSync("bash", ["-lc", `command -v ${name}`], { encoding: "utf8" })
   return result.status === 0
+}
+
+let spinnerTimer = null
+let spinnerIndex = 0
+let spinnerLabel = ""
+
+function startSpinner(label) {
+  stopSpinner()
+  spinnerLabel = label
+  spinnerIndex = 0
+  process.stdout.write(`  ${frames[0]} ${label}`)
+  spinnerTimer = setInterval(() => {
+    spinnerIndex += 1
+    const frame = frames[spinnerIndex % frames.length]
+    process.stdout.write(`\r  ${frame} ${spinnerLabel}`)
+  }, 80)
+}
+
+function stopSpinner(success = true, label = spinnerLabel) {
+  if (!spinnerTimer) {
+    return
+  }
+  clearInterval(spinnerTimer)
+  spinnerTimer = null
+  const mark = success ? "✓" : "✗"
+  const stream = success ? process.stdout : process.stderr
+  stream.write(`\r  ${mark} ${label}${" ".repeat(8)}\n`)
+}
+
+function runWithSpinner(label, action) {
+  startSpinner(label)
+  try {
+    action()
+    stopSpinner(true, label)
+  } catch (error) {
+    stopSpinner(false, label)
+    throw error
+  }
 }
 
 function checkPrerequisites() {
@@ -36,6 +75,7 @@ function checkPrerequisites() {
     return
   }
 
+  stopSpinner(false, "Checking prerequisites")
   process.stderr.write("\n  error: missing prerequisites\n\n")
   for (const item of missing) {
     process.stderr.write(`    ${item.name}\n      ${item.hint}\n\n`)
@@ -53,29 +93,9 @@ function runQuiet(command, cwd) {
   execSync(command, { stdio: "pipe", cwd, shell: true })
 }
 
-function runWithSpinner(label, action) {
-  let index = 0
-  const timer = setInterval(() => {
-    process.stdout.write(`\r  ${frames[index % frames.length]} ${label}`)
-    index += 1
-  }, 80)
-
-  try {
-    action()
-    clearInterval(timer)
-    process.stdout.write(`\r  ✓ ${label}\n`)
-  } catch (error) {
-    clearInterval(timer)
-    process.stdout.write(`\r  ✗ ${label}\n`)
-    throw error
-  }
-}
-
 function localBinPath() {
   return path.join(os.homedir(), ".local", "bin")
 }
-
-checkPrerequisites()
 
 if (!projectName || projectName.startsWith("-")) {
   fail("usage: npm create icfalcon@latest <project-name>")
@@ -87,20 +107,24 @@ if (fs.existsSync(target)) {
   fail(`"${projectName}" already exists`)
 }
 
-process.stdout.write(`\n  Creating ${projectName}...\n\n`)
+process.stdout.write(`\n  IcFalcon → ${projectName}\n\n`)
+
+runWithSpinner("Checking prerequisites", checkPrerequisites)
 
 try {
-  runWithSpinner("Downloading IcFalcon", () => {
+  runWithSpinner("Downloading template", () => {
     runQuiet(`git clone --depth 1 --quiet ${REPO} "${target}"`)
   })
 } catch {
   fail("download failed — check your internet connection and try again")
 }
 
-const gitDir = path.join(target, ".git")
-if (fs.existsSync(gitDir)) {
-  fs.rmSync(gitDir, { recursive: true, force: true })
-}
+runWithSpinner("Preparing project", () => {
+  const gitDir = path.join(target, ".git")
+  if (fs.existsSync(gitDir)) {
+    fs.rmSync(gitDir, { recursive: true, force: true })
+  }
+})
 
 try {
   runWithSpinner("Installing falcon CLI", () => {
