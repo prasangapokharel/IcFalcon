@@ -28,7 +28,8 @@ function printBanner() {
     }
     process.stdout.write(`${cyan}${line}${reset}\n`)
   }
-  process.stdout.write(`${dim}Internet Computer app framework${reset}\n`)
+  process.stdout.write(`${dim}Designed by Icpay Official${reset}\n`)
+  process.stdout.write(`${dim}Donation: f5dda803b2558d69a31290f2b4b608ccb8b4c1e445f0936c8c1dad94ff0b5f0b${reset}\n`)
 }
 
 function fail(message) {
