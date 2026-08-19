@@ -204,6 +204,9 @@ run_command() {
 
   local network_label="mainnet"
   [[ "$network_flag" == "--network local" ]] && network_label="local"
+  case "$resolved" in
+    setup:init|replica:start|replica:stop) network_label="local" ;;
+  esac
   print_banner
   step "$resolved ($network_label)"
 

@@ -10,8 +10,8 @@ source "$ROOT/ops/scripts/lib/replica.sh"
 
 deploy_local_canister() {
   cd "$BACKEND"
-  dfx build app --network local
   if dfx canister id app --network local &>/dev/null; then
+    dfx build app --network local
     dfx deploy app --mode=upgrade --network local
   else
     dfx deploy app --network local
