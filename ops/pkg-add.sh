@@ -56,6 +56,26 @@ install_package() {
   version="$(pkg_field "$name" version)" || fail "package not found in hub: $name"
   path="$(pkg_field "$name" path)" || fail "package path missing: $name"
 
+  # Check if already installed
+  if [[ -f "$LOCK_FILE" ]]; then
+    local installed_version
+    installed_version="$(python3 -c "
+import json, sys
+try:
+    with open('$LOCK_FILE') as f:
+        lock = json.load(f)
+    pkg = lock.get('packages', {}).get('$name', {})
+    print(pkg.get('version', ''))
+except:
+    pass
+" 2>/dev/null)"
+    
+    if [[ "$installed_version" == "$version" ]]; then
+      prog_info "Package" "$name@$version already installed"
+      return 0
+    fi
+  fi
+
   local base="$HUB_URL/$path"
 
   do_install() {
