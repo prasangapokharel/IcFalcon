@@ -22,15 +22,27 @@ function hasCommand(name) {
 }
 
 function checkPrerequisites() {
-  const missing = []
-  if (!hasCommand("git")) missing.push("git")
-  if (!hasCommand("dfx")) missing.push("dfx")
-  if (!hasCommand("mops")) missing.push("mops")
-  if (!hasCommand("node")) missing.push("node")
-  if (!hasCommand("npm")) missing.push("npm")
-  if (missing.length > 0) {
-    fail(`missing prerequisites: ${missing.join(", ")}`)
+  const required = [
+    { name: "git", hint: "https://git-scm.com/downloads" },
+    { name: "node", hint: "https://nodejs.org" },
+    { name: "npm", hint: "included with Node.js" },
+    { name: "dfx", hint: "sh -ci \"$(curl -fsSL https://internetcomputer.org/install.sh)\"" },
+    { name: "mops", hint: "npm install -g ic-mops" },
+  ]
+
+  const missing = required.filter((item) => !hasCommand(item.name))
+
+  if (missing.length === 0) {
+    return
   }
+
+  process.stderr.write("\n  error: missing prerequisites\n\n")
+  for (const item of missing) {
+    process.stderr.write(`    ${item.name}\n      ${item.hint}\n\n`)
+  }
+  process.stderr.write("  Install the tools above, then run:\n")
+  process.stderr.write("    npm create icfalcon@latest <project-name>\n\n")
+  process.exit(1)
 }
 
 function run(command, cwd, env = process.env) {

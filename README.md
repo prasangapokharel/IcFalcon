@@ -45,6 +45,8 @@ Install these before you begin:
 
 **Option A — npm (one command)**
 
+Install [dfx](https://internetcomputer.org/docs/current/developer-docs/getting-started/install) and [mops](https://mops.one) first, then:
+
 ```bash
 npm create icfalcon@latest my-app
 ```

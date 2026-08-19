@@ -24,8 +24,10 @@ npx create-icfalcon my-app
 
 ## Prerequisites
 
+Install these **before** running `npm create`:
+
 - [dfx](https://internetcomputer.org/docs/current/developer-docs/getting-started/install)
-- [mops](https://mops.one)
+- [mops](https://mops.one) — `npm install -g ic-mops`
 - Node.js 20+
 - git
 
