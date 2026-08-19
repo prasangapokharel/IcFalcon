@@ -28,7 +28,9 @@ Task router for AI agents working in this repo. Read the skill that matches your
 | Write Motoko | [`motoko/writingMotoko/SKILL.md`](skills/motoko/writingMotoko/SKILL.md) |
 | Deploy | [`motoko/deployGuide/SKILL.md`](skills/motoko/deployGuide/SKILL.md) + `falcon b:deploy` |
 | Ledger / ICRC | [`motoko/ledgerIntegration/SKILL.md`](skills/motoko/ledgerIntegration/SKILL.md) |
-| Internet Identity | [`motoko/internetIdentityAuth/SKILL.md`](skills/motoko/internetIdentityAuth/SKILL.md) |
+| Frontend | [`frontendStandard/SKILL.md`](skills/frontendStandard/SKILL.md) |
+| Logo / brand | [`logoStandard/SKILL.md`](skills/logoStandard/SKILL.md) |
+| II auth | [`motoko/internetIdentityAuth/SKILL.md`](skills/motoko/internetIdentityAuth/SKILL.md) |
 | Install pkg | `falcon add pkg <name>` — hub: github.com/prasangapokharel/icp-hub |
 | Add falcon command | [`ops/docs/commands.md`](../ops/docs/commands.md) |
 
@@ -43,6 +45,8 @@ Task router for AI agents working in this repo. Read the skill that matches your
 ├── migration/            # stable memory upgrades
 ├── testingStandard/      # run-tests, test layout
 ├── endpoints/            # api/v1 mixin pattern
+├── frontendStandard/     # Next.js, shadcn, services/hooks/lib
+├── logoStandard/         # brand lockup, colors, typography
 └── motoko/               # Motoko language + ICP reference
     ├── writingMotoko/
     ├── testingMotoko/

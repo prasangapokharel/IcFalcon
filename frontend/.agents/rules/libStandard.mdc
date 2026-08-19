@@ -1,0 +1,14 @@
+---
+description: IcFalcon lib/ — camelCase modules, pure helpers
+alwaysApply: true
+globs: frontend/lib/**/*
+---
+
+# lib/
+
+Read [`skills/libStandard/SKILL.md`](../skills/libStandard/SKILL.md).
+
+- `lib/<feature>/` — camelCase files
+- Pure TS — no React, no actor, no SWR
+- Import `@/lib/<feature>/<file>`
+- `cn()` at `@/lib/utils`

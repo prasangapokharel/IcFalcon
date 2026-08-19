@@ -1,26 +1,30 @@
 # IcFalcon — Internet Computer App Framework
 
-Motoko backend + Next.js frontend + `falcon` CLI. Clone, customize, deploy.
+**Build fast. Deploy on chain.**
+
+Motoko backend + Next.js frontend + `falcon` CLI.
+
+Docs: [docs/README.md](docs/README.md)
 
 ## Quick start
 
 ```bash
-./ops/install.sh          # global falcon command
-falcon s:init                # mops + moc toolchain
-falcon r:start               # local replica
-falcon b:deploy --local      # deploy canister
-falcon f:dev                 # frontend dev server
+./ops/install.sh
+falcon s:init
+falcon r:start --local
+falcon b:deploy --local
 ```
 
 ## Root layout
 
 ```
 IcFalcon/
-├── backend/              # Motoko canister (api → services → repos → storage)
-├── frontend/             # Next.js + Internet Identity
-├── .agents/              # AI coding skills
-├── ops/                  # CLI, templates, docs
-├── falcon.yaml              # command config
+├── backend/
+├── frontend/
+├── docs/                 # architecture + guides per area
+├── .agents/
+├── ops/
+├── falcon.yaml
 ├── AGENTS.md
 └── README.md
 ```

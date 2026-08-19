@@ -59,6 +59,8 @@ Read [`.agents/SKILLS.md`](.agents/SKILLS.md) first. Key skills:
 | Write Motoko | `.agents/skills/motoko/writingMotoko/SKILL.md` |
 | Deploy | `.agents/skills/motoko/deployGuide/SKILL.md` |
 | Ledger | `.agents/skills/motoko/ledgerIntegration/SKILL.md` |
+| Frontend | `.agents/skills/frontendStandard/SKILL.md` |
+| Logo / brand | `.agents/skills/logoStandard/SKILL.md` |
 | II auth | `.agents/skills/motoko/internetIdentityAuth/SKILL.md` |
 
 ### Skill folders (camelCase)
@@ -72,6 +74,7 @@ Read [`.agents/SKILLS.md`](.agents/SKILLS.md) first. Key skills:
 ├── migration/
 ├── testingStandard/
 ├── endpoints/
+├── frontendStandard/
 └── motoko/
     ├── writingMotoko/
     ├── testingMotoko/

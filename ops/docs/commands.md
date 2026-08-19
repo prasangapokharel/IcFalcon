@@ -40,7 +40,7 @@ Creates storage, repository, validator, service, API, types, frontend service + 
 
 | Short | Command | What |
 |---|---|---|
-| `s:init` | `setup:init` | mops install + moc 1.6.0 |
+| `s:init` | `setup:init` | mops + moc + frontend deps, shadcn, static build |
 | `r:start` | `replica:start` | `dfx start --background` |
 | `r:stop` | `replica:stop` | `dfx stop` |
 

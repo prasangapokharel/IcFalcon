@@ -1,41 +1,31 @@
-"use client"
+import { SetupCommand } from "@/components/home/SetupCommand"
+import Image from "next/image"
 
-import { useAuth } from "@/components/auth/auth-provider"
-import { FeaturePanel } from "@/components/feature/feature-panel"
-import { useEffect, useState } from "react"
-import { loadHealth } from "@/services/feature/feature"
-
-export default function DashboardPage() {
-  const { identity, principal, ready, login, logout } = useAuth()
-  const [health, setHealth] = useState("loading...")
-
-  useEffect(() => {
-    loadHealth().then((result) => {
-      if (result.ok) {
-        setHealth(`${result.data.status} v${result.data.version} · users ${result.data.userCount} · features ${result.data.featureCount}`)
-      } else {
-        setHealth(result.error)
-      }
-    })
-  }, [])
-
-  if (!ready) return <main>Loading...</main>
-
+export default function HomePage() {
   return (
-    <main>
-      <h1>IcFalcon</h1>
-      <p>Clone, customize, deploy your own ICP canister.</p>
-      <div className="card">
-        <p>{health}</p>
-        {identity ? (
-          <>
-            <p>Principal: {principal}</p>
-            <button onClick={logout}>Logout</button>
-            <FeaturePanel />
-          </>
-        ) : (
-          <button onClick={login}>Login with Internet Identity</button>
-        )}
+    <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
+      <div className="flex w-full max-w-lg flex-col items-center gap-10 text-center">
+        <Image
+          src="/brand/logo.png"
+          alt="IcFalcon"
+          width={320}
+          height={380}
+          priority
+          className="h-auto w-full max-w-xs drop-shadow-2xl sm:max-w-sm"
+        />
+
+        <div className="flex w-full flex-col items-center gap-6">
+          <div className="flex flex-col gap-3">
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              Welcome to IcFalcon
+            </h1>
+            <p className="text-base text-muted-foreground sm:text-lg">
+              The Motoko framework for Internet Computer apps.
+            </p>
+          </div>
+
+          <SetupCommand />
+        </div>
       </div>
     </main>
   )

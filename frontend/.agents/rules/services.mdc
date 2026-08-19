@@ -1,0 +1,22 @@
+---
+description: IcFalcon services — canister client layer, folder per feature
+alwaysApply: true
+globs: frontend/services/**/*
+---
+
+# services/
+
+Read [`../../../.agents/skills/frontendStandard/SKILL.md`](../../../.agents/skills/frontendStandard/SKILL.md).
+
+```
+services/
+  client.ts
+  idl.ts
+  icp.ts
+  <feature>/<feature>.ts
+```
+
+- Named exports only
+- Use `call()` from `client.ts` — never `HttpAgent` outside `client.ts`
+- Components and hooks call services — never inline actor access
+- Sync `idl.ts` after actor API changes

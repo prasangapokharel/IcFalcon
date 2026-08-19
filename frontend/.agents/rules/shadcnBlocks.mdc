@@ -1,0 +1,11 @@
+---
+description: shadcn blocks via CLI for full sections
+alwaysApply: true
+---
+
+# shadcn Blocks
+
+Read [`skills/shadcnBlocks/SKILL.md`](../skills/shadcnBlocks/SKILL.md).
+
+Install blocks with `npx shadcn@latest add <block>` inside `frontend/`.
+Wire to `services/<feature>/`. Move feature JSX to `components/<feature>/`.

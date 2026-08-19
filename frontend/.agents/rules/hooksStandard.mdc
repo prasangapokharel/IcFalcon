@@ -1,0 +1,13 @@
+---
+description: IcFalcon hooks/ — camelCase modules, SWR
+alwaysApply: true
+globs: frontend/hooks/**/*
+---
+
+# hooks/
+
+Read [`skills/hooksStandard/SKILL.md`](../skills/hooksStandard/SKILL.md).
+
+- `hooks/<feature>/use<Name>.ts`
+- SWR reads; services for canister calls
+- Import `@/hooks/<feature>/use<Name>`

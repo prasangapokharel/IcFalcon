@@ -1,6 +1,10 @@
 "use client"
 
 import { useAuth } from "@/components/auth/auth-provider"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import { createFeature, listFeatures, registerUser } from "@/services/feature/feature"
 import { useEffect, useState } from "react"
 
@@ -36,20 +40,49 @@ export function FeaturePanel() {
   }
 
   return (
-    <div className="card">
-      <h2>Starter Module</h2>
-      <label>Username</label>
-      <input value={username} onChange={(event) => setUsername(event.target.value)} />
-      <button onClick={onRegister}>Register</button>
-      <label style={{ marginTop: "1rem", display: "block" }}>Feature name</label>
-      <input value={name} onChange={(event) => setName(event.target.value)} />
-      <button onClick={onCreate}>Create feature</button>
-      {message ? <p>{message}</p> : null}
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>{item.name}</li>
-        ))}
-      </ul>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Starter Module</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="username">Username</FieldLabel>
+            <Input
+              id="username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+          </Field>
+          <Button type="button" onClick={onRegister}>
+            Register
+          </Button>
+        </FieldGroup>
+
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="feature-name">Feature name</FieldLabel>
+            <Input
+              id="feature-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </Field>
+          <Button type="button" onClick={onCreate}>
+            Create feature
+          </Button>
+        </FieldGroup>
+
+        {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
+
+        <ul className="flex flex-col gap-2 text-sm">
+          {items.map((item) => (
+            <li key={item.id} className="rounded-lg border border-border px-3 py-2">
+              {item.name}
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
   )
 }

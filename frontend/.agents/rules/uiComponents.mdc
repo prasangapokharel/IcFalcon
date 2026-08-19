@@ -1,0 +1,16 @@
+---
+description: IcFalcon UI — shadcn only, camelCase feature folders, thin pages
+alwaysApply: true
+globs: frontend/components/**/*,frontend/app/**/*
+---
+
+# UI
+
+Read [`../../../.agents/skills/frontendStandard/SKILL.md`](../../../.agents/skills/frontendStandard/SKILL.md).
+
+- Primitives from `@/components/ui/*` only
+- Feature UI in `components/<feature>/<Name>.tsx` — PascalCase files
+- Tailwind only via `cn()` on shadcn components
+- No raw `<button>`, `<input>`, layout divs when shadcn or a block exists
+- Server Components default; `"use client"` on smallest leaf
+- No comments in source files

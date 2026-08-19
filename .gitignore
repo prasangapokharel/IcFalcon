@@ -1,12 +1,43 @@
+# dependencies
 node_modules/
+frontend/node_modules/
+backend/.mops/
+
+# build output
 .next/
+frontend/.next/
 out/
+frontend/out/
 dist/
+backend/.dfx/
+.dfx/
+.config/dfx/
+
+# env & secrets
 .env
 .env.*
 !.env.example
 *.pem
 identity.json
-.config/dfx/
-backend/.dfx/
+
+# local registry clone
 hub/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# os
+.DS_Store
+Thumbs.db
+
+# ide
+.idea/
+.vscode/
+*.swp
+.cursor/
+
+# motoko / dfx cache
+**/.mops/moc-*
