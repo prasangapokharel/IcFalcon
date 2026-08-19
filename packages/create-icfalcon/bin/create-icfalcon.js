@@ -10,6 +10,26 @@ const args = process.argv.slice(2).filter((arg) => arg !== "--")
 const projectName = args[0]
 
 const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+const isTTY = process.stdout.isTTY
+const cyan = isTTY ? "\x1b[36m" : ""
+const dim = isTTY ? "\x1b[2m" : ""
+const reset = isTTY ? "\x1b[0m" : ""
+
+function printBanner() {
+  const bannerPath = path.join(__dirname, "..", "assets", "prefixAscii.txt")
+  if (!fs.existsSync(bannerPath)) {
+    return
+  }
+
+  const lines = fs.readFileSync(bannerPath, "utf8").split("\n")
+  for (const line of lines) {
+    if (!line.trim()) {
+      continue
+    }
+    process.stdout.write(`${cyan}${line}${reset}\n`)
+  }
+  process.stdout.write(`${dim}Internet Computer app framework${reset}\n`)
+}
 
 function fail(message) {
   stopSpinner()
@@ -97,6 +117,8 @@ function localBinPath() {
   return path.join(os.homedir(), ".local", "bin")
 }
 
+printBanner()
+
 if (!projectName || projectName.startsWith("-")) {
   fail("usage: npm create icfalcon@latest <project-name>")
 }
@@ -107,7 +129,7 @@ if (fs.existsSync(target)) {
   fail(`"${projectName}" already exists`)
 }
 
-process.stdout.write(`\n  IcFalcon → ${projectName}\n\n`)
+process.stdout.write(`\n  ${dim}Creating${reset} ${projectName}\n\n`)
 
 runWithSpinner("Checking prerequisites", checkPrerequisites)
 
