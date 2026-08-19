@@ -1,0 +1,182 @@
+# IcFalcon ops — falcon CLI config
+# Usage: falcon <command> [--local] [args...]
+# Install: ./ops/install.sh
+
+canister: app
+backend_dir: backend
+
+commands:
+  # ── setup ──────────────────────────────────────────
+  setup:init:
+    confirm: false
+    script: ops/scripts/setup-init.sh
+
+  replica:start:
+    confirm: false
+    steps:
+      - dfx start --background
+
+  replica:stop:
+    confirm: false
+    steps:
+      - dfx stop
+
+  # ── backend ────────────────────────────────────────
+  backend:test:
+    confirm: false
+    steps:
+      - dfx build {{canister}} {{network}}
+
+  backend:build:
+    confirm: false
+    steps:
+      - dfx build {{canister}} {{network}}
+
+  backend:deploy:
+    confirm: true
+    steps:
+      - dfx build {{canister}} {{network}}
+      - dfx deploy {{canister}} --mode=upgrade {{network}}
+
+  backend:hash:
+    confirm: false
+    steps:
+      - dfx canister info {{canister}} {{network}}
+
+  backend:logs:
+    confirm: false
+    steps:
+      - dfx canister logs {{canister}} {{network}}
+
+  # ── production ship ────────────────────────────────
+  prod:ship:
+    confirm: true
+    steps:
+      - dfx build {{canister}} {{network}}
+      - dfx deploy {{canister}} --mode=upgrade {{network}}
+      - npm run build --prefix frontend
+
+  prod:check:
+    confirm: false
+    steps:
+      - dfx build {{canister}} {{network}}
+      - npm run build --prefix frontend
+
+  # ── canister ───────────────────────────────────────
+  canister:status:
+    confirm: false
+    steps:
+      - dfx canister status {{canister}} {{network}}
+
+  canister:ping:
+    confirm: false
+    steps:
+      - dfx canister call {{canister}} ping --query {{network}}
+
+  canister:list:
+    confirm: false
+    steps:
+      - dfx canister id --all {{network}}
+
+  canister:id:
+    confirm: false
+    steps:
+      - dfx canister id {{canister}} {{network}}
+
+  canister:info:
+    confirm: false
+    steps:
+      - dfx canister info {{canister}} {{network}}
+
+  canister:call:
+    confirm: false
+    script: ops/scripts/canister-call.sh
+
+  # ── cycles ─────────────────────────────────────────
+  cycles:balance:
+    confirm: false
+    steps:
+      - dfx canister status {{canister}} {{network}}
+
+  cycles:address:
+    confirm: false
+    steps:
+      - dfx ledger account-id
+
+  # ── users ──────────────────────────────────────────
+  users:count:
+    confirm: false
+    steps:
+      - dfx canister call {{canister}} status --query {{network}}
+
+  # ── frontend ───────────────────────────────────────
+  frontend:dev:
+    confirm: false
+    steps:
+      - npm run dev --prefix frontend
+
+  frontend:build:
+    confirm: false
+    steps:
+      - npm run build --prefix frontend
+
+  # ── scaffold (Laravel-style) ───────────────────────
+  make:feature:
+    confirm: false
+    script: ops/make-feature.sh
+
+  # ── packages (go get style) ────────────────────────
+  pkg:add:
+    confirm: false
+    script: ops/pkg-add.sh
+
+  pkg:list:
+    confirm: false
+    script: ops/pkg-list.sh
+
+  pkg:installed:
+    confirm: false
+    script: ops/pkg-installed.sh
+
+  pkg:push:
+    confirm: false
+    script: ops/pkg-push.sh
+
+aliases:
+  # setup
+  s:init: setup:init
+  r:start: replica:start
+  r:stop: replica:stop
+  # backend
+  b:test: backend:test
+  b:build: backend:build
+  b:deploy: backend:deploy
+  b:hash: backend:hash
+  b:logs: backend:logs
+  # production
+  p:ship: prod:ship
+  p:check: prod:check
+  # canister
+  c:status: canister:status
+  c:ping: canister:ping
+  c:list: canister:list
+  c:id: canister:id
+  c:info: canister:info
+  c:call: canister:call
+  # cycles
+  y:bal: cycles:balance
+  y:addr: cycles:address
+  # users
+  u:count: users:count
+  # frontend
+  f:dev: frontend:dev
+  f:build: frontend:build
+  # scaffold
+  m:f: make:feature
+  m:feature: make:feature
+  # packages
+  add:pkg: pkg:add
+  a:p: pkg:add
+  p:list: pkg:list
+  p:ls: pkg:installed
+  p:push: pkg:push

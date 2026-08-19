@@ -1,0 +1,46 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #0b1020;
+  color: #e8ecff;
+}
+
+a {
+  color: #7aa2ff;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.card {
+  background: #141b33;
+  border: 1px solid #243055;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+button {
+  background: #3b6cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+
+input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #2a355f;
+  background: #0f1528;
+  color: #e8ecff;
+}

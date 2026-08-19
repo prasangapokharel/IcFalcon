@@ -1,0 +1,10 @@
+[package]
+name = "icfalcon-backend"
+version = "0.1.0"
+description = "IcFalcon Motoko backend"
+
+[dependencies]
+core = "2.6.1"
+
+[toolchain]
+moc = "1.6.0"

@@ -1,0 +1,68 @@
+---
+alwaysApply: true
+---
+# Motoko Backend Engineering Standards
+
+## Skills in this set
+
+| Skill | Load when |
+|---|---|
+| `writingMotoko` | Writing or reviewing any `.mo` file |
+| `testingMotoko` | Writing or running tests, verifying upgrade persistence |
+| `cyclesAndCost` | Optimizing, choosing query vs update, sizing runway |
+| `ledgerIntegration` | Code that holds or moves ICP |
+| `internetIdentityAuth` | Login, delegations, session restore |
+| `migratingMotoko` | Inline migration, no `--enhanced-migration` |
+| `migratingMotokoEnhanced` | `migrations/` directory projects |
+| `deployGuide` | Building, deploying, upgrading — read `deployGuide/SKILL.md` first |
+| `buildAndTest`, `bumpPocketIc`, `bumpRustNightly` | Only inside the dfinity/motoko compiler repo |
+
+## IcFalcon project skills (parent folder)
+
+| Skill | Path |
+|---|---|
+| Integration | `../integrationStandard/SKILL.md` |
+| Layering | `../layering/SKILL.md` |
+| Coding standard | `../codingStandard/SKILL.md` |
+| Errors | `../errorHandling/SKILL.md` |
+| Migrations | `../migration/SKILL.md` |
+| Testing | `../testingStandard/SKILL.md` |
+
+## Objective
+
+Build production-grade ICP canisters with clean architecture, strong separation of concerns, deterministic behavior, scalability, maintainability, and security.
+
+## Architecture Rules
+
+Layer order: api → services → repositories → storage
+
+Allowed: api → service, service → repository, repository → storage  
+Forbidden: api → storage, api → repository, storage → api
+
+## Folder ownership
+
+- `api/` — request handling, response mapping. No business or storage logic.
+- `services/` — business rules, orchestration. No stable memory access.
+- `repositories/` — data access, CRUD. No business rules.
+- `storage/` — stable memory, persistence. No business decisions.
+
+## Naming
+
+- Files: PascalCase (`OrderService.mo`)
+- Variables: camelCase (`currentOrder`)
+- Constants: UPPER_SNAKE_CASE
+- Functions: camelCase verbs (`createOrder`, `listOrders`)
+
+## Error handling
+
+Never trap for expected errors. Use `Result` / `ApiResult` patterns — see `../errorHandling/SKILL.md`.
+
+## Testing
+
+Every service needs tests: happy path, invalid input, unauthorized caller, upgrade persistence.
+
+Run: `falcon b:test --local` or `cd backend && bash scripts/run-tests.sh`
+
+## Golden rule
+
+Write code a new engineer can understand in under five minutes without explanation.

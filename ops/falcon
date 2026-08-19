@@ -1,0 +1,281 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# falcon — IcFalcon ops CLI
+
+resolve_root() {
+  local source="${BASH_SOURCE[0]}"
+  while [ -L "$source" ]; do
+    local dir
+    dir="$(cd "$(dirname "$source")" && pwd)"
+    source="$(readlink "$source")"
+    [[ "$source" != /* ]] && source="$dir/$source"
+  done
+  cd "$(dirname "$source")/.." && pwd
+}
+
+ROOT="$(resolve_root)"
+CONFIG="${FALCON_CONFIG:-$ROOT/falcon.yaml}"
+BACKEND_DIR="$ROOT/$(grep -E '^backend_dir:' "$CONFIG" 2>/dev/null | head -1 | sed 's/backend_dir: *//' || echo backend)"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+DIM='\033[2m'
+NC='\033[0m'
+
+usage() {
+  cat <<EOF
+${CYAN}falcon${NC} — IcFalcon ops CLI
+
+Usage:
+  falcon <command> [--local] [args...]
+
+${GREEN}Setup${NC}
+  s:init          Setup mops + moc toolchain
+  r:start         Start local replica
+  r:stop          Stop local replica
+
+${GREEN}Backend${NC}
+  b:test          Build canister
+  b:build         Build canister
+  b:deploy        Build + deploy (upgrade)
+  b:hash          Module hash / canister info
+  b:logs          Canister logs
+
+${GREEN}Production${NC}
+  p:check         Build backend + frontend
+  p:ship          Deploy backend + build frontend
+
+${GREEN}Canister${NC}
+  c:status        Canister status
+  c:ping          Health ping
+  c:list          List canister IDs
+  c:id            Show canister ID
+  c:info          Full canister info
+  c:call <method> [args] [--update]
+
+${GREEN}Cycles${NC}
+  y:bal           Cycles balance
+  y:addr          Cycles ledger address
+
+${GREEN}Users${NC}
+  u:count         User + feature counts (status)
+
+${GREEN}Frontend${NC}
+  f:dev           Next.js dev server
+  f:build         Static export build
+
+${GREEN}Packages${NC} ${DIM}(like go get)${NC}
+  add pkg <name>    Install package from icp-hub
+  a:p <name>        Short alias
+  package:<name>    Install by name (falcon package:slug)
+  p:list            List hub packages
+  p:ls              List installed packages
+  p:push <name>     Publish local pkg to hub
+
+${GREEN}Scaffold${NC}
+  m:f <Name>      Create full module (Order, Product, …)
+  m:feature <Name>
+
+Examples:
+  falcon s:init
+  falcon r:start
+  falcon m:f Order
+  falcon b:test --local
+  falcon p:ship --local
+  falcon c:call status --local
+  falcon c:call createOrder '("hello")' --update --local
+
+Install global: ./ops/install.sh
+EOF
+}
+
+step() { echo -e "\n${GREEN}==>${NC} $1"; }
+fail() { echo -e "${RED}error:${NC} $1" >&2; exit 1; }
+
+yaml_value() {
+  local key="$1"
+  grep -E "^${key}:" "$CONFIG" | head -1 | sed -E "s/^${key}:[[:space:]]*//" | tr -d '"'
+}
+
+yaml_alias_target() {
+  local alias="$1"
+  awk -v alias="$alias" '
+    $0 ~ /^aliases:/ { in_aliases=1; next }
+    in_aliases && /^[^ ]/ { in_aliases=0 }
+    in_aliases && $1 == alias ":" { print $2; exit }
+  ' "$CONFIG"
+}
+
+yaml_command_field() {
+  local command="$1"
+  local field="$2"
+  awk -v command="$command" -v field="$field" '
+    $0 ~ "^  " command ":" { in_cmd=1; next }
+    in_cmd && /^  [^ ]/ { exit }
+    in_cmd && $1 == field ":" {
+      line=$0
+      sub(/^[^:]*:[[:space:]]*/, "", line)
+      print line
+      exit
+    }
+  ' "$CONFIG"
+}
+
+yaml_command_steps() {
+  local command="$1"
+  awk -v command="$command" '
+    $0 ~ "^  " command ":" { in_cmd=1; in_steps=0; next }
+    in_cmd && /^  [^ ]/ { exit }
+    in_cmd && /^    steps:/ { in_steps=1; next }
+    in_steps && /^      - / {
+      line=$0
+      sub(/^      - /, "", line)
+      print line
+    }
+    in_steps && /^    [^ ]/ && $1 != "-" { in_steps=0 }
+  ' "$CONFIG"
+}
+
+confirm_mainnet() {
+  if [[ ! -t 0 ]]; then
+    fail "mainnet write blocked without TTY"
+  fi
+  read -r -p "Continue on mainnet? [y/N] " answer
+  [[ "$answer" == "y" || "$answer" == "Y" ]] || fail "cancelled"
+}
+
+expand_template() {
+  local line="$1"
+  local network="$2"
+  local canister
+  canister="$(yaml_value canister)"
+  line="${line//\{\{canister\}\}/$canister}"
+  line="${line//\{\{network\}\}/$network}"
+  printf '%s' "$line"
+}
+
+resolve_command() {
+  local command="$1"
+  local alias_target
+  alias_target="$(yaml_alias_target "$command" || true)"
+  if [[ -n "$alias_target" ]]; then
+    echo "$alias_target"
+  else
+    echo "$command"
+  fi
+}
+
+run_command() {
+  local command="$1"
+  local network_flag="$2"
+  shift 2
+  local extra_args=("$@")
+
+  local resolved
+  resolved="$(resolve_command "$command")"
+
+  local confirm
+  confirm="$(yaml_command_field "$resolved" confirm || true)"
+  if [[ "$confirm" == "true" && "$network_flag" != "--network local" ]]; then
+    confirm_mainnet
+  fi
+
+  local script
+  script="$(yaml_command_field "$resolved" script || true)"
+
+  local network_label="mainnet"
+  [[ "$network_flag" == "--network local" ]] && network_label="local"
+  step "$resolved ($network_label)"
+
+  export FALCON_ROOT="$ROOT"
+  export FALCON_BACKEND_DIR="$BACKEND_DIR"
+  export FALCON_CANISTER="$(yaml_value canister)"
+  export FALCON_NETWORK="$network_flag"
+
+  if [[ -n "$script" ]]; then
+    local script_path="$ROOT/$script"
+    [[ -x "$script_path" || -f "$script_path" ]] || fail "script not found: $script_path"
+    chmod +x "$script_path" 2>/dev/null || true
+    bash "$script_path" "${extra_args[@]}"
+    return
+  fi
+
+  local steps
+  steps="$(yaml_command_steps "$resolved")"
+  [[ -n "$steps" ]] || fail "unknown command: $command (try: falcon help)"
+
+  local workdir="$ROOT"
+  if [[ "$resolved" == backend:* || "$resolved" == canister:* || "$resolved" == cycles:* || "$resolved" == users:* ]]; then
+    workdir="$BACKEND_DIR"
+    [[ -d "$workdir" ]] || fail "backend dir not found: $workdir"
+  fi
+
+  while IFS= read -r step_line; do
+    [[ -z "$step_line" ]] && continue
+    local cmd
+    cmd="$(expand_template "$step_line" "$network_flag")"
+    echo "$cmd"
+    if [[ "$cmd" == dfx* ]]; then
+      (cd "$BACKEND_DIR" && bash -c "$cmd")
+    else
+      (cd "$workdir" && bash -c "$cmd")
+    fi
+  done <<< "$steps"
+}
+
+main() {
+  [[ -f "$CONFIG" ]] || fail "config not found: $CONFIG"
+
+  local command="${1:-}"
+  shift || true
+
+  local local_flag=false
+  local filtered_args=()
+  for arg in "$@"; do
+    if [[ "$arg" == "--local" ]]; then
+      local_flag=true
+    else
+      filtered_args+=("$arg")
+    fi
+  done
+
+  local network_flag=""
+  if $local_flag; then
+    network_flag="--network local"
+  fi
+
+  case "$command" in
+    ""|help|-h|--help)
+      usage
+      exit 0
+      ;;
+    list)
+      grep -E '^  [a-z].*:$' "$CONFIG" | sed -E 's/^  ([^:]+):.*/\1/' | grep -v '^aliases$'
+      exit 0
+      ;;
+    add)
+      if [[ "${filtered_args[0]:-}" == "pkg" ]]; then
+        export FALCON_ROOT="$ROOT"
+        export FALCON_BACKEND_DIR="$BACKEND_DIR"
+        step "pkg:add"
+        bash "$ROOT/ops/pkg-add.sh" "${filtered_args[1]:?usage: falcon add pkg <name>}"
+        exit 0
+      fi
+      fail "unknown add command (try: falcon add pkg <name>)"
+      ;;
+    package:*)
+      export FALCON_ROOT="$ROOT"
+      export FALCON_BACKEND_DIR="$BACKEND_DIR"
+      local pkg_name="${command#package:}"
+      step "pkg:add $pkg_name"
+      bash "$ROOT/ops/pkg-add.sh" "$pkg_name"
+      exit 0
+      ;;
+  esac
+
+  run_command "$command" "$network_flag" "${filtered_args[@]}"
+}
+
+main "$@"

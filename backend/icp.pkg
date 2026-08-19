@@ -1,0 +1,23 @@
+{
+  "registry": "github.com/prasangapokharel/icp-hub",
+  "packages": {
+    "slug": {
+      "version": "1.0.0",
+      "path": "pkg/slug",
+      "source": "packages/slug",
+      "installed": "2026-08-19T03:51:10Z"
+    },
+    "dao": {
+      "version": "1.0.0",
+      "path": "pkg/dao",
+      "source": "packages/dao",
+      "installed": "2026-08-19T03:57:23Z"
+    },
+    "wallet": {
+      "version": "1.0.0",
+      "path": "pkg/wallet",
+      "source": "packages/wallet",
+      "installed": "2026-08-19T03:57:24Z"
+    }
+  }
+}

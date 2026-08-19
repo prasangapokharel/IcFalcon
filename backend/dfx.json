@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "canisters": {
+    "app": {
+      "main": "src/main.mo",
+      "type": "motoko",
+      "args": "--package pkg pkg"
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "mops sources"
+    }
+  }
+}
