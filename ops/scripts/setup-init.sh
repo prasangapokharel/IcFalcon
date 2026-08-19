@@ -2,13 +2,15 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+export FALCON_ROOT="$ROOT"
+export FALCON_BACKEND_DIR="${FALCON_BACKEND_DIR:-$ROOT/backend}"
 
 # shellcheck source=progress.sh
 source "$ROOT/ops/scripts/progress.sh"
 
 prog_header "Setup in progress"
 
-cd "${FALCON_BACKEND_DIR:-$ROOT/backend}"
+cd "$FALCON_BACKEND_DIR"
 prog_run "Installing backend packages" mops install
 prog_run "Pinning Motoko toolchain" mops toolchain use moc 1.6.0
 

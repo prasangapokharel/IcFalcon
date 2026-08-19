@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+ROOT="${FALCON_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 BACKEND="${FALCON_BACKEND_DIR:-$ROOT/backend}"
 FRONTEND="$ROOT/frontend"
-export ROOT BACKEND FRONTEND FALCON_BACKEND_DIR="$BACKEND" FALCON_CANISTER="${FALCON_CANISTER:-app}"
+export ROOT BACKEND FRONTEND FALCON_ROOT="$ROOT" FALCON_BACKEND_DIR="$BACKEND" FALCON_CANISTER="${FALCON_CANISTER:-app}"
 
 # shellcheck source=lib/replica.sh
 source "$ROOT/ops/scripts/lib/replica.sh"
