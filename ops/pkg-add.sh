@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT="${FALCON_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/..}"
 HUB_URL="${ICP_HUB_URL:-https://raw.githubusercontent.com/prasangapokharel/icp-hub/main}"
 PKG_DIR="${FALCON_BACKEND_DIR}/pkg"
 LOCK_FILE="${FALCON_BACKEND_DIR}/icp.pkg"
 
-fail() { echo "error: $1" >&2; exit 1; }
-step() { echo -e "\n==> $1"; }
+# shellcheck source=progress.sh
+source "$ROOT/ops/scripts/progress.sh"
+
+fail() { prog_fail "$1"; exit 1; }
 
 fetch_index() {
   curl -fsSL "$HUB_URL/index.json"
@@ -53,25 +56,24 @@ install_package() {
   version="$(pkg_field "$name" version)" || fail "package not found in hub: $name"
   path="$(pkg_field "$name" path)" || fail "package path missing: $name"
 
-  step "fetch $name@$version from icp-hub"
   local base="$HUB_URL/$path"
 
-  local manifest
-  manifest="$(curl -fsSL "$base/icp.pkg.yaml")"
+  do_install() {
+    local manifest
+    manifest="$(curl -fsSL "$base/icp.pkg.yaml")"
 
-  local install_path
-  install_path="$(echo "$manifest" | grep '^install:' | sed 's/install: *//')"
-  [[ -n "$install_path" ]] || install_path="pkg/$name"
+    local install_path
+    install_path="$(echo "$manifest" | grep '^install:' | sed 's/install: *//')"
+    [[ -n "$install_path" ]] || install_path="pkg/$name"
 
-  local dest="${PKG_DIR}/${install_path#pkg/}"
-  mkdir -p "$dest"
+    local dest="${PKG_DIR}/${install_path#pkg/}"
+    mkdir -p "$dest"
 
-  echo "$manifest" | grep '^  - ' | sed 's/^  - //' | while read -r file; do
-    echo "  + $install_path/$file"
-    curl -fsSL "$base/$file" -o "$dest/$file"
-  done
+    echo "$manifest" | grep '^  - ' | sed 's/^  - //' | while read -r file; do
+      curl -fsSL "$base/$file" -o "$dest/$file" 2>&1
+    done
 
-  python3 -c "
+    python3 -c "
 import json, os
 from datetime import datetime, timezone
 lock = {'registry': 'github.com/prasangapokharel/icp-hub', 'packages': {}}
@@ -87,11 +89,10 @@ lock['packages']['$name'] = {
 with open('$LOCK_FILE', 'w') as f:
     json.dump(lock, f, indent=2)
     f.write('\n')
-"
+" 2>&1
+  }
 
-  echo ""
-  echo "Installed $name@$version → backend/$install_path"
-  echo "Import: mo:pkg/${install_path#pkg/}/$(echo "$manifest" | grep '^  - ' | head -1 | sed 's/^  - //' | sed 's/.mo$//')"
+  prog_run "$name@$version" do_install
 }
 
 case "${1:-}" in
