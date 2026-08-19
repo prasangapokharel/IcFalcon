@@ -4,24 +4,23 @@ Scaffold an [IcFalcon](https://github.com/prasangapokharel/IcFalcon) app — Mot
 
 ## Usage
 
+One command. Everything else is automatic.
+
 ```bash
 npm create icfalcon@latest my-app
 ```
+
+Open http://localhost:3000 when setup finishes.
 
 ```bash
 npx create-icfalcon my-app
 ```
 
-## Then
+## What runs automatically
 
-```bash
-cd my-app
-falcon s:init
-```
-
-`create-icfalcon` runs `./ops/install.sh` automatically after scaffold.
-
-Open http://localhost:3000
+1. Clone IcFalcon from GitHub
+2. `./ops/install.sh` — install `falcon` CLI
+3. `falcon s:init` — backend, deploy, frontend, dev server
 
 ## Prerequisites
 

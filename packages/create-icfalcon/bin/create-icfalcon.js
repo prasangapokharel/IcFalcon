@@ -3,6 +3,7 @@
 const { execSync } = require("child_process")
 const fs = require("fs")
 const path = require("path")
+const os = require("os")
 
 const REPO = "https://github.com/prasangapokharel/IcFalcon.git"
 const args = process.argv.slice(2).filter((arg) => arg !== "--")
@@ -13,8 +14,12 @@ function fail(message) {
   process.exit(1)
 }
 
-function run(command, cwd) {
-  execSync(command, { stdio: "inherit", cwd, shell: true })
+function run(command, cwd, env = process.env) {
+  execSync(command, { stdio: "inherit", cwd, shell: true, env })
+}
+
+function localBinPath() {
+  return path.join(os.homedir(), ".local", "bin")
 }
 
 if (!projectName || projectName.startsWith("-")) {
@@ -45,15 +50,18 @@ process.stdout.write("\n  Installing falcon CLI...\n\n")
 try {
   run("bash ops/install.sh", target)
 } catch {
-  fail("./ops/install.sh failed — run it manually inside your project")
+  fail("./ops/install.sh failed")
 }
 
-process.stdout.write(`
-  ✓ IcFalcon ready
+const env = {
+  ...process.env,
+  PATH: `${localBinPath()}${path.delimiter}${process.env.PATH || ""}`,
+}
 
-  cd ${projectName}
-  falcon s:init
+process.stdout.write("\n  Running full setup (backend + frontend + dev server)...\n\n")
 
-  https://github.com/prasangapokharel/IcFalcon
-
-`)
+try {
+  run("falcon s:init", target, env)
+} catch {
+  fail("falcon s:init failed — cd into your project and run: falcon s:init")
+}

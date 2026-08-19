@@ -43,13 +43,13 @@ Install these before you begin:
 
 ## Installation
 
-**Option A — npm (no manual clone)**
+**Option A — npm (one command)**
 
 ```bash
 npm create icfalcon@latest my-app
-cd my-app
-falcon s:init
 ```
+
+Installs the CLI, sets up backend + frontend, deploys locally, and starts the dev server. Open http://localhost:3000.
 
 **Option B — git clone**
 
