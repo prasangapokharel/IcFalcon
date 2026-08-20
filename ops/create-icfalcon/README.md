@@ -18,9 +18,11 @@ npx create-icfalcon my-app
 
 ## What runs automatically
 
-1. Clone IcFalcon from GitHub
+1. Clone IcFalcon from GitHub (wallet demo, finance packages, `falcon` CLI)
 2. `./ops/install.sh` — install `falcon` CLI
 3. `falcon s:init` — backend, deploy, frontend, dev server
+
+Open `/wallet` after setup for the custodial wallet reference demo.
 
 ## Prerequisites
 
