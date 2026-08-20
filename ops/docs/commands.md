@@ -50,7 +50,7 @@ Creates storage, repository, validator, service, API, types, frontend service + 
 
 | Short | Command | What |
 |---|---|---|
-| `b:test` | `backend:test` | Build canister |
+| `b:test` | `backend:test` | Run Motoko unit tests + build canister |
 | `b:build` | `backend:build` | Build canister |
 | `b:deploy` | `backend:deploy` | Build + upgrade deploy |
 | `b:hash` | `backend:hash` | Module hash / info |

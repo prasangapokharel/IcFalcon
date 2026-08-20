@@ -13,6 +13,7 @@ ops/
 ├── pkg-installed.sh    # falcon p:ls
 ├── pkg-push.sh         # falcon p:push <name>
 ├── scripts/
+│   ├── backend-test.sh      # falcon b:test
 │   ├── canister-call.sh
 │   ├── setup-init.sh
 │   └── validate-skills.sh   # falcon sk:validate
