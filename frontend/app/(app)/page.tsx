@@ -1,5 +1,6 @@
 import { BackendStatus } from "@/components/home/BackendStatus"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function HomePage() {
   return (
@@ -24,6 +25,12 @@ export default function HomePage() {
             </p>
           </div>
           <BackendStatus />
+          <Link
+            href="/wallet"
+            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Open wallet demo
+          </Link>
         </div>
       </div>
     </main>

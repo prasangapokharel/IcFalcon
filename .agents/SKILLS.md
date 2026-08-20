@@ -1,90 +1,200 @@
 # IcFalcon Agent Skills
 
-Task router for AI agents working in this repo. Read the skill that matches your task.
+Task router for AI agents. **Read one skill per task** — do not load the whole tree.
 
-## Project map
+## How to pick a skill
 
-| Path | Role |
+1. Match your task in the tables below
+2. Read that `SKILL.md` only
+3. Follow **Related** links if needed
+
+**Dependency direction:**
+
+```
+Foundation → Money Core → Extensions / Connectors → Applications
+```
+
+---
+
+## Skill standard
+
+Every skill under `.agents/skills/<category>/<skillName>/SKILL.md` must have:
+
+| Section | Required |
 |---|---|
-| `backend/src/` | Motoko canister (api → services → repos → storage) |
-| `backend/pkg/` | Shared Motoko packages (`mo:pkg/...`) |
-| `frontend/` | Next.js + Internet Identity |
-| `ops/` | `falcon` CLI, templates, docs |
-| `falcon.yaml` | Command config |
-| `.agents/skills/` | This folder |
+| Folder name | camelCase, ends with `Standard` (leaf skills and category folders, e.g. `financeStandard/walletStandard`) |
+| YAML `name` | Matches folder name (camelCase, ends with `Standard`) |
+| YAML `description` | When an agent should load this skill |
+| Purpose | One paragraph |
+| When to use | Bullet triggers |
+| Pattern / packages | How to implement in IcFalcon |
+| Rules | Architecture and security constraints |
+| Related | Links to adjacent skills (not duplicate docs) |
 
-## Task → skill
+**Do not:** one skill per function, per package, or per API method.  
+**Do not:** duplicate ledger hazard docs — use `motokoStandard/ledgerIntegrationStandard` + `financeStandard/*`.
+
+**Validate before merge:**
+
+```bash
+falcon sk:validate    # or: bash ops/scripts/validate-skills.sh
+```
+
+Also runs as the first step of `falcon p:check`.
+
+---
+
+## Foundation
 
 | Task | Skill |
 |---|---|
-| Add new feature / module | [`integrationStandard/SKILL.md`](skills/integrationStandard/SKILL.md) |
-| Scaffold with CLI | `falcon m:f <Name>` + [`integrationStandard/SKILL.md`](skills/integrationStandard/SKILL.md) |
-| Single endpoint | [`endpoints/SKILL.md`](skills/endpoints/SKILL.md) |
-| Layer architecture | [`layering/SKILL.md`](skills/layering/SKILL.md) |
-| Code style / naming | [`codingStandard/SKILL.md`](skills/codingStandard/SKILL.md) |
-| Errors / ApiResult | [`errorHandling/SKILL.md`](skills/errorHandling/SKILL.md) |
-| Upgrade / migration | [`migration/SKILL.md`](skills/migration/SKILL.md) |
+| Layer rules | [`layering/SKILL.md`](skills/layeringStandard/SKILL.md) |
+| Code style | [`codingStandard/SKILL.md`](skills/codingStandard/SKILL.md) |
+| Errors / ApiResult | [`errorHandling/SKILL.md`](skills/errorHandlingStandard/SKILL.md) |
+| Stable memory migrations | [`migration/SKILL.md`](skills/migrationStandard/SKILL.md) |
 | Run tests | [`testingStandard/SKILL.md`](skills/testingStandard/SKILL.md) |
-| Write Motoko | [`motoko/writingMotoko/SKILL.md`](skills/motoko/writingMotoko/SKILL.md) |
-| Project setup | [`guide/projectSetupStandard/SKILL.md`](skills/guide/projectSetupStandard/SKILL.md) |
-| Local deploy | [`guide/localDeployStandard/SKILL.md`](skills/guide/localDeployStandard/SKILL.md) |
-| Production deploy | [`guide/productionDeployStandard/SKILL.md`](skills/guide/productionDeployStandard/SKILL.md) |
-| Release / ship | [`guide/releaseStandard/SKILL.md`](skills/guide/releaseStandard/SKILL.md) |
-| Deploy reference | [`motoko/deployGuide/SKILL.md`](skills/motoko/deployGuide/SKILL.md) |
-| Ledger / ICRC | [`motoko/ledgerIntegration/SKILL.md`](skills/motoko/ledgerIntegration/SKILL.md) |
-| Frontend | [`frontendStandard/SKILL.md`](skills/frontendStandard/SKILL.md) |
-| Logo / brand | [`logoStandard/SKILL.md`](skills/logoStandard/SKILL.md) |
-| II auth | [`motoko/internetIdentityAuth/SKILL.md`](skills/motoko/internetIdentityAuth/SKILL.md) |
-| Install pkg | `falcon add pkg <name>` — hub: github.com/prasangapokharel/icp-hub |
-| Add falcon command | [`ops/docs/commands.md`](../ops/docs/commands.md) |
+| Write Motoko | [`motokoStandard/writingMotokoStandard/SKILL.md`](skills/motokoStandard/writingMotokoStandard/SKILL.md) |
+| API endpoints | [`endpoints/SKILL.md`](skills/endpointsStandard/SKILL.md) |
 
-## IcFalcon skills (camelCase folders)
+---
+
+## Money core
+
+| Task | Skill |
+|---|---|
+| Wallet, deposit, balance | [`financeStandard/walletStandard/SKILL.md`](skills/financeStandard/walletStandard/SKILL.md) |
+| Send ICP / ICRC | [`financeStandard/transferStandard/SKILL.md`](skills/financeStandard/transferStandard/SKILL.md) |
+| Tx history, deposit sync | [`financeStandard/transactionStandard/SKILL.md`](skills/financeStandard/transactionStandard/SKILL.md) |
+| AI-safe transfers (propose/execute) | [`extensionsStandard/aiActionsStandard/SKILL.md`](skills/extensionsStandard/aiActionsStandard/SKILL.md) |
+| Ledger hazards (fees, double-credit) | [`motokoStandard/ledgerIntegrationStandard/SKILL.md`](skills/motokoStandard/ledgerIntegrationStandard/SKILL.md) |
+
+Hub packages: `subaccount`, `ledger`, `icrc1`, `icrc2`, `wallet`, `transfer`, `transaction`, `ckbtc` — install via `falcon add pkg <name>`.
+
+---
+
+## Applications
+
+| Task | Skill |
+|---|---|
+| New feature (full checklist) | [`integrationStandard/SKILL.md`](skills/integrationStandard/SKILL.md) |
+| Scaffold module | `falcon m:f <Name>` + integrationStandard |
+| Frontend | [`frontendStandard/SKILL.md`](skills/frontendStandard/SKILL.md) |
+| Logo / favicon | [`logoStandard/SKILL.md`](skills/logoStandard/SKILL.md) |
+
+Frontend detail skills: [`frontend/.agents/SKILLS.md`](../frontend/.agents/SKILLS.md).
+
+---
+
+## Auth & ICP protocol
+
+| Task | Skill |
+|---|---|
+| Internet Identity | [`motokoStandard/internetIdentityAuthStandard/SKILL.md`](skills/motokoStandard/internetIdentityAuthStandard/SKILL.md) |
+| RBAC / caller guards | [`motokoStandard/authorizationStandard/SKILL.md`](skills/motokoStandard/authorizationStandard/SKILL.md) |
+| HTTP outcalls | [`motokoStandard/httpOutcallsStandard/SKILL.md`](skills/motokoStandard/httpOutcallsStandard/SKILL.md) |
+| Cycles / cost | [`motokoStandard/cyclesAndCostStandard/SKILL.md`](skills/motokoStandard/cyclesAndCostStandard/SKILL.md) |
+| Canister tests (detail) | [`motokoStandard/testingMotokoStandard/SKILL.md`](skills/motokoStandard/testingMotokoStandard/SKILL.md) |
+| Inline migration | [`motokoStandard/migratingMotokoStandard/SKILL.md`](skills/motokoStandard/migratingMotokoStandard/SKILL.md) |
+| Multi-step migration | [`motokoStandard/migratingMotokoEnhancedStandard/SKILL.md`](skills/motokoStandard/migratingMotokoEnhancedStandard/SKILL.md) |
+| Migration debug | [`motokoStandard/migrationTroubleshootingStandard/SKILL.md`](skills/motokoStandard/migrationTroubleshootingStandard/SKILL.md) |
+
+---
+
+## Extensions
+
+| Task | Skill |
+|---|---|
+| OpenAI / LLM | [`extensionsStandard/openAiStandard/SKILL.md`](skills/extensionsStandard/openAiStandard/SKILL.md) |
+| AI-safe money actions | [`extensionsStandard/aiActionsStandard/SKILL.md`](skills/extensionsStandard/aiActionsStandard/SKILL.md) |
+| Object storage | [`extensionsStandard/objectStorageStandard/SKILL.md`](skills/extensionsStandard/objectStorageStandard/SKILL.md) |
+| Stripe | [`extensionsStandard/stripeStandard/SKILL.md`](skills/extensionsStandard/stripeStandard/SKILL.md) |
+| Email (transactional) | [`extensionsStandard/emailStandard/SKILL.md`](skills/extensionsStandard/emailStandard/SKILL.md) |
+| Email (raw multi-recipient) | [`extensionsStandard/emailRawStandard/SKILL.md`](skills/extensionsStandard/emailRawStandard/SKILL.md) |
+| Email verification | [`extensionsStandard/emailVerificationStandard/SKILL.md`](skills/extensionsStandard/emailVerificationStandard/SKILL.md) |
+| Email marketing | [`extensionsStandard/emailMarketingStandard/SKILL.md`](skills/extensionsStandard/emailMarketingStandard/SKILL.md) |
+| Calendar invites (.ics) | [`extensionsStandard/emailCalendarEventsStandard/SKILL.md`](skills/extensionsStandard/emailCalendarEventsStandard/SKILL.md) |
+| Invite / RSVP | [`extensionsStandard/inviteLinksStandard/SKILL.md`](skills/extensionsStandard/inviteLinksStandard/SKILL.md) |
+| User approval | [`extensionsStandard/userApprovalStandard/SKILL.md`](skills/extensionsStandard/userApprovalStandard/SKILL.md) |
+| OQL setup | [`extensionsStandard/oqlStandard/SKILL.md`](skills/extensionsStandard/oqlStandard/SKILL.md) |
+| OQL queries | [`extensionsStandard/queryingOqlStandard/SKILL.md`](skills/extensionsStandard/queryingOqlStandard/SKILL.md) |
+| Post to X | [`extensionsStandard/postingToXStandard/SKILL.md`](skills/extensionsStandard/postingToXStandard/SKILL.md) |
+| Camera | [`extensionsStandard/cameraStandard/SKILL.md`](skills/extensionsStandard/cameraStandard/SKILL.md) |
+| QR scanner | [`extensionsStandard/qrCodeStandard/SKILL.md`](skills/extensionsStandard/qrCodeStandard/SKILL.md) |
+
+---
+
+## Connectors
+
+| Task | Skill |
+|---|---|
+| Slack | [`connectorsStandard/slackConnectorStandard/SKILL.md`](skills/connectorsStandard/slackConnectorStandard/SKILL.md) |
+| Gmail | [`connectorsStandard/googleMailConnectorStandard/SKILL.md`](skills/connectorsStandard/googleMailConnectorStandard/SKILL.md) |
+| Google Calendar | [`connectorsStandard/googleCalendarConnectorStandard/SKILL.md`](skills/connectorsStandard/googleCalendarConnectorStandard/SKILL.md) |
+
+---
+
+## Deploy & ops
+
+| Task | Skill |
+|---|---|
+| Project setup | [`guideStandard/projectSetupStandard/SKILL.md`](skills/guideStandard/projectSetupStandard/SKILL.md) |
+| Local deploy | [`guideStandard/localDeployStandard/SKILL.md`](skills/guideStandard/localDeployStandard/SKILL.md) |
+| Production deploy | [`guideStandard/productionDeployStandard/SKILL.md`](skills/guideStandard/productionDeployStandard/SKILL.md) |
+| Release | [`guideStandard/releaseStandard/SKILL.md`](skills/guideStandard/releaseStandard/SKILL.md) |
+| Deploy reference | [`motokoStandard/deployGuideStandard/SKILL.md`](skills/motokoStandard/deployGuideStandard/SKILL.md) |
+| Falcon CLI | [`ops/docs/commands.md`](../ops/docs/commands.md) |
+
+---
+
+## Motoko compiler repo only
+
+**Not for IcFalcon app work** — only when hacking the Motoko compiler itself:
+
+| Task | Skill |
+|---|---|
+| Build moc / run test-runner | [`motokoStandard/buildAndTestStandard/SKILL.md`](skills/motokoStandard/buildAndTestStandard/SKILL.md) |
+| Bump pocket-ic | [`motokoStandard/bumpPocketIcStandard/SKILL.md`](skills/motokoStandard/bumpPocketIcStandard/SKILL.md) |
+| Bump Rust nightly | [`motokoStandard/bumpRustNightlyStandard/SKILL.md`](skills/motokoStandard/bumpRustNightlyStandard/SKILL.md) |
+
+---
+
+## Complete index (48 skills)
 
 ```
 .agents/skills/
-├── codingStandard/       # naming, imports, file size
-├── errorHandling/        # ApiResult, validators
-├── integrationStandard/  # full feature checklist
-├── layering/             # api → service → repo → storage
-├── migration/            # stable memory upgrades
-├── testingStandard/      # run-tests, test layout
-├── endpoints/            # api/v1 mixin pattern
-├── frontendStandard/     # Next.js, shadcn, services/hooks/lib
-├── logoStandard/         # brand lockup, colors, typography
-├── guide/                # IcFalcon deploy + setup workflows
-│   ├── projectSetupStandard/
-│   ├── localDeployStandard/
-│   ├── productionDeployStandard/
-│   └── releaseStandard/
-└── motoko/               # Motoko language + ICP reference
-    ├── writingMotoko/
-    ├── testingMotoko/
-    ├── migratingMotoko/
-    ├── migratingMotokoEnhanced/
-    ├── ledgerIntegration/
-    ├── internetIdentityAuth/
-    ├── cyclesAndCost/
-    ├── buildAndTest/       # compiler repo only
-    └── deployGuide/        # SKILL.md + deploy docs
+├── codingStandard/          errorHandlingStandard/   layeringStandard/
+├── migrationStandard/       testingStandard/         integrationStandard/
+├── endpointsStandard/     frontendStandard/        logoStandard/
+├── financeStandard/
+│   ├── walletStandard/      transferStandard/        transactionStandard/
+├── guideStandard/
+│   ├── projectSetupStandard/   localDeployStandard/
+│   ├── productionDeployStandard/   releaseStandard/
+├── extensionsStandard/      (15 *Standard skills — see table above)
+├── connectorsStandard/      (3 *ConnectorStandard skills)
+└── motokoStandard/
+    ├── writingMotokoStandard/   ledgerIntegrationStandard/   authorizationStandard/
+    ├── httpOutcallsStandard/    internetIdentityAuthStandard/ cyclesAndCostStandard/
+    ├── testingMotokoStandard/   migratingMotokoStandard/      migratingMotokoEnhancedStandard/
+    ├── migrationTroubleshootingStandard/   deployGuideStandard/
+    └── buildAndTestStandard/    bumpPocketIcStandard/         bumpRustNightlyStandard/  ← compiler only
 ```
 
-## CLI quick reference
+---
+
+## CLI
 
 ```bash
 falcon m:f Order           # scaffold module
-falcon add pkg wallet      # install hub package
-falcon b:test --local        # build canister
-falcon b:deploy --local    # deploy
-falcon p:check --local     # full check
-falcon f:dev               # frontend
+falcon add pkg wallet      # hub package
+falcon sk:validate         # skills CI
+falcon b:test --local      # build canister
 ```
 
-Full commands: [`ops/docs/commands.md`](../ops/docs/commands.md)
+## Global rules
 
-## Rules
-
-- Use `mo:core` not `mo:base`
-- Use `persistent actor` + `include` mixins in `main.mo`
-- Storage maps are NOT `transient`; services ARE `transient`
+- `mo:core` not `mo:base`
+- `persistent actor` + mixins in `main.mo`
+- Storage NOT `transient`; services ARE `transient`
 - Max ~300 lines per file
 - Never commit `.env`, `*.pem`, `identity.json`

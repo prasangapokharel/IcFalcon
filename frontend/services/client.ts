@@ -5,6 +5,29 @@ import { canisterId, host } from "@/services/icp"
 
 export type Outcome<T> = { ok: true; data: T } | { ok: false; error: string }
 
+export type WalletDeposit = {
+  icrcOwner: { toText: () => string }
+  icrcSubaccount: [] | [Uint8Array]
+  accountIdHex: string
+  qrPayload: string
+}
+
+export type WalletBalance = {
+  amount: bigint
+  symbol: string
+  decimals: number
+}
+
+export type TxView = {
+  id: string
+  kind: string
+  amount: bigint
+  fee: bigint
+  status: string
+  blockIndex: [] | [bigint]
+  createdAt: bigint
+}
+
 export type AppActor = {
   ping: () => Promise<string>
   status: () => Promise<{
@@ -16,7 +39,36 @@ export type AppActor = {
   register: (username: string) => Promise<{ ok?: unknown; err?: { message: string } }>
   me: () => Promise<{ ok?: { username: string; role: string }; err?: { message: string } }>
   createFeature: (name: string) => Promise<{ ok?: { id: string; name: string }; err?: { message: string } }>
-  listFeatures: (offset: bigint, limit: bigint) => Promise<{ ok?: { items: Array<{ id: string; name: string }>; total: bigint } }>
+  listFeatures: (offset: bigint, limit: bigint) => Promise<{
+    ok?: { items: Array<{ id: string; name: string }>; total: bigint }
+    err?: { message: string }
+  }>
+  registerWallet: () => Promise<{ ok?: WalletDeposit; err?: { message: string } }>
+  depositInfo: () => Promise<{ ok?: WalletDeposit; err?: { message: string } }>
+  getBalance: () => Promise<{ ok?: WalletBalance; err?: { message: string } }>
+  proposeTransfer: (
+    transferId: string,
+    toPrincipal: string,
+    amount: bigint,
+  ) => Promise<{
+    ok?: { transferId: string; fee: bigint; totalDebit: bigint; balance: bigint }
+    err?: { code: number; message: string }
+  }>
+  executeTransfer: (
+    transferId: string,
+    toPrincipal: string,
+    amount: bigint,
+  ) => Promise<{ ok?: { transferId: string; blockIndex: bigint }; err?: { message: string } }>
+  sendTransfer: (
+    transferId: string,
+    toPrincipal: string,
+    amount: bigint,
+  ) => Promise<{ ok?: { transferId: string; blockIndex: bigint }; err?: { message: string } }>
+  listTransactions: (
+    offset: bigint,
+    limit: bigint,
+  ) => Promise<{ ok?: { items: TxView[]; total: bigint }; err?: { message: string } }>
+  adminTreasury: () => Promise<{ ok?: { registeredWallets: bigint; symbol: string }; err?: { message: string } }>
 }
 
 export async function createActor(identity?: Identity): Promise<AppActor> {

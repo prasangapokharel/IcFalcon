@@ -41,3 +41,5 @@ Thumbs.db
 
 # motoko / dfx cache
 **/.mops/moc-*
+backend/Runner.wasm
+docs/

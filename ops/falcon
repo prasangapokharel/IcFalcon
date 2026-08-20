@@ -54,15 +54,18 @@ ${GREEN}Setup${NC}
   r:stop          Stop local replica
 
 ${GREEN}Backend${NC}
-  b:test          Build canister
+  b:test          Run unit tests + build canister
   b:build         Build canister
   b:deploy        Build + deploy (upgrade)
   b:hash          Module hash / canister info
   b:logs          Canister logs
 
 ${GREEN}Production${NC}
-  p:check         Build backend + frontend
+  p:check         Validate skills + build backend + frontend
   p:ship          Deploy backend + build frontend
+
+${GREEN}Skills${NC}
+  sk:validate     Validate .agents/skills structure (CI)
 
 ${GREEN}Canister${NC}
   c:status        Canister status

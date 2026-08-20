@@ -1,5 +1,5 @@
 ---
-name: icFalcon-frontendStandard
+name: frontendStandard
 description: >-
   IcFalcon Next.js frontend — shadcn/ui only, camelCase folders, services/hooks/lib
   layering, static export, Internet Identity. Read before any frontend change.
@@ -98,7 +98,7 @@ Allowed Tailwind:
 - `className` on `html` / `body` in root layout
 - Theme variables in `app/globals.css`
 
-Full sections (auth, sidebar shell, dashboard): install a block, move feature parts to `components/<feature>/`, wire services — see [`frontend/.agents/skills/shadcnBlocks/SKILL.md`](../../../frontend/.agents/skills/shadcnBlocks/SKILL.md).
+Full sections (auth, sidebar shell, dashboard): install a block, move feature parts to `components/<feature>/`, wire services — see [`frontend/.agents/skills/shadcnBlocksStandard/SKILL.md`](../../../frontend/.agents/skills/shadcnBlocksStandard/SKILL.md).
 
 ---
 
@@ -164,7 +164,7 @@ export function useFeatures() {
 
 Import: `@/hooks/<feature>/use<Name>`
 
-SWR reference: [`frontend/.agents/skills/swrOfficial/SKILL.md`](../../../frontend/.agents/skills/swrOfficial/SKILL.md)
+SWR reference: [`frontend/.agents/skills/swrOfficialStandard/SKILL.md`](../../../frontend/.agents/skills/swrOfficialStandard/SKILL.md)
 
 ---
 
@@ -244,8 +244,8 @@ Env: `frontend/.env.example` — `NEXT_PUBLIC_CANISTER_ID_APP`, `NEXT_PUBLIC_DFX
 | Frontend local index | [`frontend/.agents/SKILLS.md`](../../../frontend/.agents/SKILLS.md) |
 | lib detail | [`frontend/.agents/skills/libStandard/SKILL.md`](../../../frontend/.agents/skills/libStandard/SKILL.md) |
 | hooks detail | [`frontend/.agents/skills/hooksStandard/SKILL.md`](../../../frontend/.agents/skills/hooksStandard/SKILL.md) |
-| shadcn blocks | [`frontend/.agents/skills/shadcnBlocks/SKILL.md`](../../../frontend/.agents/skills/shadcnBlocks/SKILL.md) |
+| shadcn blocks | [`frontend/.agents/skills/shadcnBlocksStandard/SKILL.md`](../../../frontend/.agents/skills/shadcnBlocksStandard/SKILL.md) |
 | Full feature flow | [`../integrationStandard/SKILL.md`](../integrationStandard/SKILL.md) |
-| II auth | [`../motoko/internetIdentityAuth/SKILL.md`](../motoko/internetIdentityAuth/SKILL.md) |
-| Deploy / env | [`../motoko/deployGuide/frontend-connection.md`](../motoko/deployGuide/frontend-connection.md) |
-| Production deploy | [`../guide/productionDeployStandard/SKILL.md`](../guide/productionDeployStandard/SKILL.md) |
+| II auth | [`../motokoStandard/internetIdentityAuthStandard/SKILL.md`](../motokoStandard/internetIdentityAuthStandard/SKILL.md) |
+| Deploy / env | [`../motokoStandard/deployGuideStandard/frontend-connection.md`](../motokoStandard/deployGuideStandard/frontend-connection.md) |
+| Production deploy | [`../guideStandard/productionDeployStandard/SKILL.md`](../guideStandard/productionDeployStandard/SKILL.md) |

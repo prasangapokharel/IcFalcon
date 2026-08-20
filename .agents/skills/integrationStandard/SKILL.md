@@ -1,5 +1,5 @@
 ---
-name: IcFalcon-integrationStandard
+name: integrationStandard
 description: >-
   End-to-end guide for integrating a new IcFalcon backend feature — full flow from
   types through main.mo wiring, migration cleanup, pkg/ imports, tests, frontend
@@ -13,12 +13,13 @@ layers in order; do not skip steps.
 
 | Step skill | Detail |
 |---|---|
-| Architecture | [`layering/SKILL.md`](../layering/SKILL.md) |
+| Architecture | [`layering/SKILL.md`](../layeringStandard/SKILL.md) |
 | Code style | [`codingStandard/SKILL.md`](../codingStandard/SKILL.md) |
-| Errors | [`errorHandling/SKILL.md`](../errorHandling/SKILL.md) |
-| Migrations | [`migration/SKILL.md`](../migration/SKILL.md) |
+| Errors | [`errorHandling/SKILL.md`](../errorHandlingStandard/SKILL.md) |
+| Migrations | [`migration/SKILL.md`](../migrationStandard/SKILL.md) |
 | Tests | [`testingStandard/SKILL.md`](../testingStandard/SKILL.md) |
-| Single endpoint only | [`endpoints/SKILL.md`](../endpoints/SKILL.md) |
+| ICP money | [`financeStandard/walletStandard`](../financeStandard/walletStandard/SKILL.md) |
+| Single endpoint only | [`endpoints/SKILL.md`](../endpointsStandard/SKILL.md) |
 
 ---
 
@@ -53,7 +54,7 @@ Answer these first:
 | New field on **existing** stored record? | `migrations/<Name>.mo` required | Skip migration |
 | Derived lookup index? | `transient` + `reindex()` at startup in `main.mo` | Store in stable map |
 | Ephemeral (signals, sessions, rate limits)? | `transient let` | — |
-| Touches ICP funds? | Use `caller`; ledger via `LedgerClient` | — |
+| Touches ICP funds? | Read [`financeStandard/walletStandard`](../financeStandard/walletStandard/SKILL.md) + [`financeStandard/transferStandard`](../financeStandard/transferStandard/SKILL.md); hazards in [`motokoStandard/ledgerIntegrationStandard`](../motokoStandard/ledgerIntegrationStandard/SKILL.md) | — |
 | Needs rate limit? | New `RateLimitStorage` map in `main.mo` + `Config.RATE_*` | — |
 | User-facing UI? | Frontend IDL + service + i18n | Backend only |
 
@@ -124,7 +125,7 @@ Import in service/repo: `import LiveStorage "../storage/LiveStorage";`
 
 ## Phase 3 — Migration (only if needed)
 
-See [`migration/SKILL.md`](../migration/SKILL.md).
+See [`migration/SKILL.md`](../migrationStandard/SKILL.md).
 
 ```
 src/migrations/AddMyField.mo
@@ -172,7 +173,7 @@ Use `pkg/crud/map` for repetitive get/upsert/remove → `#err` patterns when use
 
 ## Phase 5 — Validator (`src/validators/<Feature>.mo`) — if needed
 
-Pure `?Text` — see [`errorHandling/SKILL.md`](../errorHandling/SKILL.md).
+Pure `?Text` — see [`errorHandling/SKILL.md`](../errorHandlingStandard/SKILL.md).
 
 Prefer `pkg/validate/text` and `pkg/validate/nat` before writing new checks.
 

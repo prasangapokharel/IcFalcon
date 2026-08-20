@@ -1,5 +1,5 @@
 ---
-name: icFalcon-hooksStandard
+name: hooksStandard
 description: IcFalcon frontend hooks/ — camelCase modules, SWR data hooks only.
 ---
 
@@ -39,6 +39,6 @@ export function useFeatures() {
 }
 ```
 
-SWR docs: [`swrOfficial/SKILL.md`](../swrOfficial/SKILL.md)
+SWR docs: [`swrOfficial/SKILL.md`](../swrOfficialStandard/SKILL.md)
 
 Master: [`.agents/skills/frontendStandard/SKILL.md`](../../../../.agents/skills/frontendStandard/SKILL.md)

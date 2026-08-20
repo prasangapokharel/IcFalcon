@@ -14,7 +14,8 @@ ops/
 ├── pkg-push.sh         # falcon p:push <name>
 ├── scripts/
 │   ├── canister-call.sh
-│   └── setup-init.sh
+│   ├── setup-init.sh
+│   └── validate-skills.sh   # falcon sk:validate
 ├── templates/          # scaffolds (was boilerplate/)
 │   ├── feature/        # falcon m:f templates
 │   └── command.example.sh

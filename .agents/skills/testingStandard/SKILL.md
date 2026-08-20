@@ -1,5 +1,5 @@
 ---
-name: IcFalcon-testingStandard
+name: testingStandard
 description: >-
   IcFalcon Motoko testing — run-tests.sh, test layout, migration tests.
   Read before adding or running backend tests.
@@ -45,6 +45,6 @@ falcon b:deploy --local
 
 | Skill | Path |
 |---|---|
-| Build & test (moc) | [`motoko/buildAndTest/SKILL.md`](../motoko/buildAndTest/SKILL.md) |
-| Migration | [`migration/SKILL.md`](../migration/SKILL.md) |
+| Build & test (moc) | [`motokoStandard/buildAndTestStandard/SKILL.md`](../motokoStandard/buildAndTestStandard/SKILL.md) |
+| Migration | [`migration/SKILL.md`](../migrationStandard/SKILL.md) |
 | Integration | [`integrationStandard/SKILL.md`](../integrationStandard/SKILL.md) |

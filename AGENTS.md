@@ -41,56 +41,114 @@ Hub: https://github.com/prasangapokharel/icp-hub
 
 ## Agent skills map
 
-Read [`.agents/SKILLS.md`](.agents/SKILLS.md) first. Key skills:
+Read [`.agents/SKILLS.md`](.agents/SKILLS.md) first — layered router (Foundation → Money → Extensions → Apps).
+
+**Naming:** every folder under `.agents/skills/` ends with `Standard` (categories and leaf skills), e.g. `financeStandard/walletStandard`. YAML `name:` must match the folder name.
+
+**Validate after skill edits:**
+
+```bash
+falcon sk:validate          # skills structure + links
+falcon p:check --local      # skills + backend + frontend build
+```
+
+### Core tasks
 
 | Task | Skill path |
 |---|---|
 | New feature | `.agents/skills/integrationStandard/SKILL.md` |
 | Scaffold CLI | `falcon m:f <Name>` |
-| Layer rules | `.agents/skills/layering/SKILL.md` |
+| Layer rules | `.agents/skills/layeringStandard/SKILL.md` |
 | Code style | `.agents/skills/codingStandard/SKILL.md` |
-| Errors | `.agents/skills/errorHandling/SKILL.md` |
-| Migrations | `.agents/skills/migration/SKILL.md` |
+| Errors | `.agents/skills/errorHandlingStandard/SKILL.md` |
+| Migrations | `.agents/skills/migrationStandard/SKILL.md` |
 | Tests | `.agents/skills/testingStandard/SKILL.md` |
-| Endpoints | `.agents/skills/endpoints/SKILL.md` |
-| Write Motoko | `.agents/skills/motoko/writingMotoko/SKILL.md` |
-| Project setup | `.agents/skills/guide/projectSetupStandard/SKILL.md` |
-| Local deploy | `.agents/skills/guide/localDeployStandard/SKILL.md` |
-| Production deploy | `.agents/skills/guide/productionDeployStandard/SKILL.md` |
-| Release | `.agents/skills/guide/releaseStandard/SKILL.md` |
-| Deploy reference | `.agents/skills/motoko/deployGuide/SKILL.md` |
-| Ledger | `.agents/skills/motoko/ledgerIntegration/SKILL.md` |
+| Endpoints | `.agents/skills/endpointsStandard/SKILL.md` |
+| Write Motoko | `.agents/skills/motokoStandard/writingMotokoStandard/SKILL.md` |
+| Project setup | `.agents/skills/guideStandard/projectSetupStandard/SKILL.md` |
+| Local deploy | `.agents/skills/guideStandard/localDeployStandard/SKILL.md` |
+| Production deploy | `.agents/skills/guideStandard/productionDeployStandard/SKILL.md` |
+| Release | `.agents/skills/guideStandard/releaseStandard/SKILL.md` |
+| Deploy reference | `.agents/skills/motokoStandard/deployGuideStandard/SKILL.md` |
 | Frontend | `.agents/skills/frontendStandard/SKILL.md` |
+| **Wallet demo (Phase 3)** | `/wallet` — [`docs/phase/3/PLAN.md`](docs/phase/3/PLAN.md) |
 | Logo / brand | `.agents/skills/logoStandard/SKILL.md` |
-| II auth | `.agents/skills/motoko/internetIdentityAuth/SKILL.md` |
+| II auth | `.agents/skills/motokoStandard/internetIdentityAuthStandard/SKILL.md` |
+| RBAC / auth | `.agents/skills/motokoStandard/authorizationStandard/SKILL.md` |
+| HTTP outcalls | `.agents/skills/motokoStandard/httpOutcallsStandard/SKILL.md` |
+| Extensions (OpenAI, Stripe, email, …) | [`.agents/SKILLS.md`](.agents/SKILLS.md) → Extensions |
+| Connectors (Slack, Gmail, Calendar) | [`.agents/SKILLS.md`](.agents/SKILLS.md) → Connectors |
 
-### Skill folders (camelCase)
+### Finance standards (`financeStandard/`)
+
+Hub money layer for Phase 1. **Hazards only** (fees, double-credit, address formats): [`motokoStandard/ledgerIntegrationStandard`](.agents/skills/motokoStandard/ledgerIntegrationStandard/SKILL.md). **Composition patterns** below.
+
+| What | When to use | Skill | Hub packages |
+|---|---|---|---|
+| **Wallet** — derive accounts, deposit addresses, balance reads | New wallet feature, deposit UI, multi-token (ICP / ckBTC) | [`walletStandard`](.agents/skills/financeStandard/walletStandard/SKILL.md) | `subaccount`, `ledger`, `icrc1`, `wallet` |
+| **Transfer** — send ICRC, fee reserve, idempotency | `TransferService.send`, user-to-user sends | [`transferStandard`](.agents/skills/financeStandard/transferStandard/SKILL.md) | `transfer`, `transaction`, `icrc1` |
+| **Transaction** — history index, deposit sync | `TxStore`, history API, reconciliation | [`transactionStandard`](.agents/skills/financeStandard/transactionStandard/SKILL.md) | `transaction` |
+
+**Architecture rules (all finance skills):**
+
+- Hub pkgs = pure logic; only `services/` awaits the ledger
+- `amount + fee <= balance` before transfer
+- Two tx rows per internal transfer
+- `subaccount.fromPrincipal` only — never hand-roll
+- Layering: `api → services → repositories → storage`
+
+```bash
+falcon add pkg wallet      # pulls subaccount, ledger, icrc1, wallet
+falcon add pkg transfer
+falcon add pkg transaction
+```
+
+Reference implementation (Phase 3): [docs/phase/3/PLAN.md](docs/phase/3/PLAN.md)
+
+### Skill folders (camelCase, `*Standard` suffix)
 
 ```
 .agents/skills/
 ├── codingStandard/
-├── errorHandling/
+├── errorHandlingStandard/
 ├── integrationStandard/
-├── layering/
-├── migration/
+├── layeringStandard/
+├── migrationStandard/
 ├── testingStandard/
-├── endpoints/
+├── endpointsStandard/
 ├── frontendStandard/
 ├── logoStandard/
-├── guide/
+├── extensionsStandard/
+│   ├── openAiStandard/
+│   ├── objectStorageStandard/
+│   ├── stripeStandard/
+│   ├── emailStandard/
+│   └── …
+├── connectorsStandard/
+│   ├── slackConnectorStandard/
+│   ├── googleMailConnectorStandard/
+│   └── googleCalendarConnectorStandard/
+├── financeStandard/
+│   ├── walletStandard/
+│   ├── transferStandard/
+│   └── transactionStandard/
+├── guideStandard/
 │   ├── projectSetupStandard/
 │   ├── localDeployStandard/
 │   ├── productionDeployStandard/
 │   └── releaseStandard/
-└── motoko/
-    ├── writingMotoko/
-    ├── testingMotoko/
-    ├── migratingMotoko/
-    ├── ledgerIntegration/
-    ├── internetIdentityAuth/
-    ├── cyclesAndCost/
-    ├── buildAndTest/
-    └── deployGuide/        # SKILL.md
+└── motokoStandard/
+    ├── writingMotokoStandard/
+    ├── testingMotokoStandard/
+    ├── migratingMotokoStandard/
+    ├── migrationTroubleshootingStandard/
+    ├── httpOutcallsStandard/
+    ├── authorizationStandard/
+    ├── ledgerIntegrationStandard/
+    ├── internetIdentityAuthStandard/
+    ├── cyclesAndCostStandard/
+    ├── buildAndTestStandard/
+    └── deployGuideStandard/
 ```
 
 ## Docs

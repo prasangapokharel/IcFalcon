@@ -47,4 +47,50 @@ module {
     role : Text;
     createdAt : Int;
   };
+
+  public type WalletRegistration = {
+    registeredAt : Int;
+  };
+
+  public type WalletDeposit = {
+    icrcOwner : Principal;
+    icrcSubaccount : ?Blob;
+    accountIdHex : Text;
+    qrPayload : Text;
+  };
+
+  public type WalletBalance = {
+    amount : Nat;
+    symbol : Text;
+    decimals : Nat8;
+  };
+
+  public type TxView = {
+    id : Text;
+    kind : Text;
+    amount : Nat;
+    fee : Nat;
+    status : Text;
+    blockIndex : ?Nat;
+    createdAt : Int;
+  };
+
+  public type SendTransferResult = {
+    transferId : Text;
+    blockIndex : Nat;
+  };
+
+  public type TransferPreview = {
+    transferId : Text;
+    toPrincipal : Text;
+    amount : Nat;
+    fee : Nat;
+    totalDebit : Nat;
+    balance : Nat;
+  };
+
+  public type TreasurySummary = {
+    registeredWallets : Nat;
+    symbol : Text;
+  };
 };

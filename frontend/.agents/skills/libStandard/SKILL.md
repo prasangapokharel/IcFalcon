@@ -1,5 +1,5 @@
 ---
-name: icFalcon-libStandard
+name: libStandard
 description: IcFalcon frontend lib/ — camelCase modules, pure helpers only.
 ---
 

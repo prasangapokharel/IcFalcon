@@ -1,5 +1,5 @@
 ---
-name: IcFalcon-codingStandard
+name: codingStandard
 description: >-
   IcFalcon Motoko coding standards — naming, imports, file size, mo:core patterns,
   layering imports, reserved keywords, and comments. Read before writing or
@@ -11,8 +11,8 @@ description: >-
 Project conventions on top of Motoko language rules. When this doc and generic
 Motoko advice conflict, **this doc wins for IcFalcon**.
 
-Language reference: [`skills/motoko/writingMotoko/SKILL.md`](../motoko/writingMotoko/SKILL.md)  
-Architecture: [`skills/layering/SKILL.md`](../layering/SKILL.md)
+Language reference: [`skills/motokoStandard/writingMotokoStandard/SKILL.md`](../motokoStandard/writingMotokoStandard/SKILL.md)  
+Architecture: [`skills/layeringStandard/SKILL.md`](../layeringStandard/SKILL.md)
 
 ---
 
@@ -265,8 +265,8 @@ cd backend && dfx build icp_wallet_backend --check --network ic
 
 | Topic | Path |
 |---|---|
-| Layering | [`skills/layering/SKILL.md`](../layering/SKILL.md) |
-| Errors | [`skills/errorHandling/SKILL.md`](../errorHandling/SKILL.md) |
+| Layering | [`skills/layeringStandard/SKILL.md`](../layeringStandard/SKILL.md) |
+| Errors | [`skills/errorHandlingStandard/SKILL.md`](../errorHandlingStandard/SKILL.md) |
 | Tests | [`skills/testingStandard/SKILL.md`](../testingStandard/SKILL.md) |
-| Migrations | [`skills/migration/SKILL.md`](../migration/SKILL.md) |
-| Motoko style guide | [`skills/motoko/docs/reference/style-guide.md`](../motoko/docs/reference/style-guide.md) |
+| Migrations | [`skills/migrationStandard/SKILL.md`](../migrationStandard/SKILL.md) |
+| Motoko style guide | [`skills/motokoStandard/docs/reference/style-guide.md`](../motokoStandard/docs/reference/style-guide.md) |

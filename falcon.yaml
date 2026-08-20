@@ -22,8 +22,7 @@ commands:
   # ── backend ────────────────────────────────────────
   backend:test:
     confirm: false
-    steps:
-      - dfx build {{canister}} {{network}}
+    script: ops/scripts/backend-test.sh
 
   backend:build:
     confirm: false
@@ -57,8 +56,13 @@ commands:
   prod:check:
     confirm: false
     steps:
+      - bash ops/scripts/validate-skills.sh
       - dfx build {{canister}} {{network}}
       - npm run build --prefix frontend
+
+  skills:validate:
+    confirm: false
+    script: ops/scripts/validate-skills.sh
 
   # ── canister ───────────────────────────────────────
   canister:status:
@@ -178,3 +182,4 @@ aliases:
   p:list: pkg:list
   p:ls: pkg:installed
   p:push: pkg:push
+  sk:validate: skills:validate

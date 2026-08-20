@@ -9,8 +9,8 @@ Router for work under `frontend/`. Master standard: [`.agents/skills/frontendSta
 | Any frontend change | [`../../.agents/skills/frontendStandard/SKILL.md`](../../.agents/skills/frontendStandard/SKILL.md) |
 | `lib/` helpers | [`skills/libStandard/SKILL.md`](skills/libStandard/SKILL.md) |
 | `hooks/` SWR | [`skills/hooksStandard/SKILL.md`](skills/hooksStandard/SKILL.md) |
-| shadcn blocks | [`skills/shadcnBlocks/SKILL.md`](skills/shadcnBlocks/SKILL.md) |
-| SWR reference | [`skills/swrOfficial/SKILL.md`](skills/swrOfficial/SKILL.md) |
+| shadcn blocks | [`skills/shadcnBlocksStandard/SKILL.md`](skills/shadcnBlocksStandard/SKILL.md) |
+| SWR reference | [`skills/swrOfficialStandard/SKILL.md`](skills/swrOfficialStandard/SKILL.md) |
 | Next.js App Router | [`skills/nextjsStandard/SKILL.md`](skills/nextjsStandard/SKILL.md) |
 
 ## Cursor rules
@@ -23,7 +23,7 @@ Rules are thin pointers — detail lives in skills above.
 | [`rules/services.mdc`](rules/services.mdc) | `services/**` | `frontendStandard` |
 | [`rules/libStandard.mdc`](rules/libStandard.mdc) | `lib/**` | `libStandard` |
 | [`rules/hooksStandard.mdc`](rules/hooksStandard.mdc) | `hooks/**` | `hooksStandard` |
-| [`rules/shadcnBlocks.mdc`](rules/shadcnBlocks.mdc) | full sections / shells | `shadcnBlocks` |
+| [`rules/shadcnBlocks.mdc`](rules/shadcnBlocks.mdc) | full sections / shells | `shadcnBlocksStandard` |
 
 ## Folders (camelCase)
 
@@ -40,6 +40,6 @@ frontend/
 
 | Task | Path |
 |---|---|
-| Project setup | [`../../.agents/skills/guide/projectSetupStandard/SKILL.md`](../../.agents/skills/guide/projectSetupStandard/SKILL.md) |
-| Local deploy | [`../../.agents/skills/guide/localDeployStandard/SKILL.md`](../../.agents/skills/guide/localDeployStandard/SKILL.md) |
-| Production deploy | [`../../.agents/skills/guide/productionDeployStandard/SKILL.md`](../../.agents/skills/guide/productionDeployStandard/SKILL.md) |
+| Project setup | [`../../.agents/skills/guideStandard/projectSetupStandard/SKILL.md`](../../.agents/skills/guideStandard/projectSetupStandard/SKILL.md) |
+| Local deploy | [`../../.agents/skills/guideStandard/localDeployStandard/SKILL.md`](../../.agents/skills/guideStandard/localDeployStandard/SKILL.md) |
+| Production deploy | [`../../.agents/skills/guideStandard/productionDeployStandard/SKILL.md`](../../.agents/skills/guideStandard/productionDeployStandard/SKILL.md) |

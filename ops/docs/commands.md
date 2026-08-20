@@ -62,8 +62,28 @@ Creates storage, repository, validator, service, API, types, frontend service + 
 
 | Short | Command | What |
 |---|---|---|
-| `p:check` | `prod:check` | Build backend + frontend |
+| `p:check` | `prod:check` | Validate skills + build backend + frontend |
 | `p:ship` | `prod:ship` | Deploy backend + build frontend |
+
+---
+
+## Skills
+
+| Short | Command | What |
+|---|---|---|
+| `sk:validate` | `skills:validate` | Validate `.agents/skills` — frontmatter, index, links |
+
+```bash
+falcon sk:validate
+```
+
+Runs `ops/scripts/validate-skills.sh` (also first step of `p:check`). Checks:
+
+- Every skill folder name ends with `Standard` (camelCase)
+- Every `SKILL.md` has `name:` + `description:` matching its folder
+- No duplicate names; all skills indexed in `.agents/SKILLS.md`
+- Strict sections for `financeStandard/*` and `logoStandard`
+- Broken internal `skills/.../SKILL.md` links
 
 ---
 

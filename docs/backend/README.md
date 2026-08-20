@@ -39,4 +39,4 @@ falcon b:hash --local     # module hash before mainnet
 
 After API changes, sync `frontend/services/idl.ts`.
 
-Skills: `.agents/skills/layering/SKILL.md`, `.agents/skills/integrationStandard/SKILL.md`
+Skills: `.agents/skills/layeringStandard/SKILL.md`, `.agents/skills/integrationStandard/SKILL.md`
