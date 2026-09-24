@@ -25,7 +25,7 @@ After wasm build with new public methods:
 
 ## Internet Identity
 
-Login flow: `frontend/services/client.ts` + `@dfinity/auth-client`.
+Login flow: `frontend/services/client.ts` + `@icp-sdk/auth/client`.
 
 Skill: [`../internetIdentityAuthStandard/SKILL.md`](../internetIdentityAuthStandard/SKILL.md)
 

@@ -12,7 +12,7 @@ deploy_local_canister() {
   cd "$BACKEND"
   if dfx canister id app --network local &>/dev/null; then
     dfx build app --network local
-    dfx deploy app --mode=upgrade --network local
+    dfx deploy app --mode=upgrade --wasm-memory-persistence keep --network local
   else
     dfx deploy app --network local
   fi

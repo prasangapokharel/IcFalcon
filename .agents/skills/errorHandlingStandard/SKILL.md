@@ -2,48 +2,36 @@
 name: errorHandlingStandard
 description: >-
   IcFalcon Motoko error handling — ApiResult, validators, early returns, ledger
-  errors, traps vs results, and message conventions. Read before writing any
-  service or API endpoint.
+  and call_error, traps vs results. Read before writing any service or API endpoint.
 ---
 
 # IcFalcon — Error Handling
 
-Every user-facing failure is a **`#err : Text`** inside **`Types.ApiResult<T>`**.
-Expected failures never trap. Traps are for programmer bugs and unrecoverable
-invariants only.
+Every user-facing failure returns **`Types.ApiResult<T>`** with a structured
+`ApiError`. Expected failures never trap. Traps are for programmer bugs only.
 
 ---
 
 ## Type system
 
-Defined in `backend/src/types.mo`:
+`mo:pkg/errors/result`:
 
 ```motoko
-public type ApiResult<T> = {
-  #ok: T;
-  #err: Text;
-};
+public type ApiError = { code : Nat32; message : Text };
+public type ApiResult<T> = { #ok : T; #err : ApiError };
+
+Result.ok(value)
+Result.err(Result.badRequest, "Message")
+Result.err(Result.unauthorized, "Unauthorized")
+Result.err(Result.notFound, "Wallet not registered")
+Result.err(Result.conflict, "Transfer in flight")
+Result.err(Result.tooManyRequests, "Rate limit exceeded")
 ```
 
-Shared helpers in `backend/pkg/api/response.mo`:
+Codes: `400` badRequest · `401` unauthorized · `403` forbidden · `404` notFound
+· `409` conflict · `429` tooManyRequests
 
-```motoko
-import Response "../../pkg/api/response";
-
-Response.ok(value)
-Response.err("Message")
-Response.require(condition, "Message")
-Response.guard(condition, "Message", value)
-Response.mapOk(result, f)
-Response.flatten(nested)
-```
-
-Access guards in `backend/pkg/access/guard.mo`:
-
-```motoko
-Guard.requireAuth(caller)   // rejects anonymous
-Guard.requireOwner(caller, owner)
-```
+`backend/src/types.mo` re-exports these as `Types.ApiResult<T>`.
 
 ---
 
@@ -52,97 +40,105 @@ Guard.requireOwner(caller, owner)
 ```
 API (api/v1/)     → pass through ApiResult; no business rules
 Service           → validate, authorize, return #err or #ok
-Repository        → data access only; no ApiResult (returns ?T or ())
+Repository        → data access only; returns ?T or ()
 Validator         → pure func … : ?Text  (Some msg = invalid)
-Storage           → no validation, no errors to callers
+Storage           → no validation
 ```
 
 | Layer | Returns | Must not |
 |---|---|---|
 | `api/v1/*.mo` | `async Types.ApiResult<T>` | Read storage, trap on bad input |
-| `services/*.mo` | `Types.ApiResult<T>` or `async Types.ApiResult<T>` | Skip validators for user input |
-| `validators/*.mo` | `?Text` | Call ledger or storage |
-| `repositories/*.mo` | `?Record`, `Bool`, `()` | Return `#err` (not its job) |
+| `services/*.mo` | `Types.ApiResult<T>` or `async` | Skip validators |
+| `validators/*.mo` | `?Text` | Call ledger or return `#err` |
+| `repositories/*.mo` | `?Record`, `()` | Return `ApiResult` |
+
+---
+
+## Anonymous caller — reject on all mutating paths
+
+Internet Identity and fund-moving endpoints must reject the anonymous principal
+(`2vxsx-fae`). Use `mo:pkg/principal/caller`:
+
+```motoko
+import Caller "mo:pkg/principal/caller";
+
+switch (Caller.requireAuth(caller)) {
+  case (?message) { return Result.err(Result.unauthorized, message) };
+  case (null) {};
+};
+```
+
+`Caller.requireAuth` uses `Principal.isAnonymous`. Apply on **every** update that
+reads or moves user data. Resolve `caller` via `MiddlewareAuth.effectiveCaller`
+in the API — never trust a user-supplied principal for fund paths.
 
 ---
 
 ## API pattern — thin mixin
 
 ```motoko
-mixin (live: LiveService.LiveService, mwConfig: MiddlewareAuth.Config) {
-  public shared ({ caller }) func joinLiveRoom(
-    roomId: Text,
-    tabId: Text,
-    inviteToken: ?Text,
-  ): async Types.ApiResult<Types.LiveRoomPublic> {
-    LiveService.joinRoom(
-      live,
-      MiddlewareAuth.effectiveCaller(mwConfig, caller),
-      roomId,
-      tabId,
-      inviteToken,
-    );
-  };
+public shared ({ caller }) func executeTransfer(...) : async Types.ApiResult<...> {
+  await TransferService.execute(
+    transferService,
+    MiddlewareAuth.effectiveCaller(mwConfig, caller),
+    transferId, toPrincipal, amount,
+  );
 };
 ```
 
-Rules:
-
-- API resolves `caller` via `MiddlewareAuth.effectiveCaller` — never trust a
-  user-supplied principal for fund paths.
 - API does not wrap service results — service already returns `ApiResult`.
-- Queries that cannot fail use plain return types; still use `shared query` when
-  read-only.
+- `shared query` for read-only; `shared` (update) for mutations.
+- **`try/catch` cannot be used in `shared query`** — queries are not async;
+  wrap inter-canister calls only in update/shared async functions.
 
 ---
 
 ## Service pattern — early return
 
 ```motoko
-public func transferByUsername(...): async Types.ApiResult<{ blockIndex: Nat64; txId: Types.TxId }> {
-  if (not RateLimitService.allow(...)) {
-    return #err(RateLimitService.message(Config.RATE_TRANSFER));
-  };
-  switch (AmountValidator.validate(amount)) {
-    case (?err) { return #err(err) };
-    case (null) {};
-  };
-  switch (resolveSender(service, caller)) {
-    case (#err(e)) { return #err(e) };
-    case (#ok(sender)) {
-      // continue
-    };
-  };
-  switch (UserRepo.findByUsername(service.users, username)) {
-    case (null) { #err("Username not found: @" # username) };
-    case (?user) { /* transfer */ };
-  };
+switch (WalletValidator.validateAmount(amount)) {
+  case (?message) { return Result.err(Result.badRequest, message) };
+  case (null) {};
+};
+switch (UserRepo.findByPrincipal(users, caller)) {
+  case (null) { return Result.err(Result.notFound, "User not found") };
+  case (?user) { /* use user */ };
 };
 ```
+
+### Option shorthand (`??`)
+
+For simple unwrap-or-return, prefer `??` (see
+[`writingMotokoStandard/references/control-flow.md`](../motokoStandard/writingMotokoStandard/references/control-flow.md)):
+
+```motoko
+// Readable when the right-hand side is a plain return:
+let user = UserRepo.findByPrincipal(users, caller)
+  ?? return Result.err(Result.notFound, "User not found");
+```
+
+Use `switch` when the `?` arm needs transformation or multiple branches.
 
 ### Rules
 
 | Rule | Example |
 |---|---|
-| Fail fast with `return #err(...)` | Before any ledger call |
-| Validators return `?Text` | `case (?err) { return #err(err) }` |
-| Chain auth with `switch` | `requireUser`, `requireOwner` |
-| Ledger failures → descriptive `#err` | `"Transfer failed: " # TransferError.describe(e)` |
-| Never `Debug.trap` for user input | `"Invalid amount"` not trap |
-| Fund paths use `caller`, not param principal | Prevents spending others' funds |
+| Fail fast before ledger `await` | `return Result.err(...)` |
+| Validators return `?Text` | `null` = valid |
+| Ledger **variant** errors → `#err` | `Transfer.mapResult(raw)` |
+| Ledger **call** errors → `try/catch` | See below |
+| Never trap for user input | `"Invalid amount"` not `Debug.trap` |
+| Capture `caller` before `await` on fund paths | Avoid stale identity |
 
 ---
 
 ## Validator pattern
 
-Validators live in `backend/src/validators/`. Pure functions only:
-
 ```motoko
 module {
-  public func validate(amount: Nat): ?Text {
-    if (amount == 0) { return ?"Amount must be greater than zero" };
-    if (amount > Config.MAX_TRANSFER) { return ?"Amount exceeds maximum" };
-    null
+  public func validate(amount : Nat) : ?Text {
+    if (amount == 0) return ?"Amount must be greater than zero";
+    null;
   };
 };
 ```
@@ -150,68 +146,65 @@ module {
 | Return | Meaning |
 |---|---|
 | `null` | Valid |
-| `?Text` | Invalid — message shown to user |
-
-Do not throw, trap, or return `ApiResult` from validators.
+| `?Text` | Invalid — user-facing message |
 
 ---
 
-## Internal helpers — sync ApiResult
+## Ledger errors — two failure modes
 
-Private service functions may return `ApiResult` for composition:
+### 1. Call succeeds — ledger returns a variant (`#Ok` / `#Err`)
+
+Map with pkg helpers — never leak raw blobs:
 
 ```motoko
-func resolveSender(service: TransferService, caller: Principal): Types.ApiResult<{ ... }> {
-  switch (UserRepo.findByPrincipal(service.users, caller)) {
-    case (null) { #err("User not found") };
-    case (?user) {
-      #ok({ userId = user.id; source = ...; senderName = ... });
-    };
+let raw = await ledger.icrc1_transfer(args);
+let result = Transfer.mapResult(raw);
+switch (result) {
+  case (#err({ message })) {
+    TransactionRepo.remove(store, transferId);
+    Result.err(Result.badRequest, message);
   };
+  case (#ok({ blockIndex })) { /* complete */ };
 };
 ```
 
-Caller checks:
+**Do not** pre-flight balance read before transfer — racy and wastes cycles.
+The ledger `#InsufficientFunds` variant is authoritative.
+
+### 2. Call fails — `#call_error` (queue full, freezing threshold, etc.)
+
+The `await` itself can throw `Error` with code `#call_error`. Wrap fund-moving
+`await` in `try/catch`:
 
 ```motoko
-switch (resolveSender(service, caller)) {
-  case (#err(e)) { return #err(e) };
-  case (#ok(sender)) { /* use sender */ };
+import Error "mo:core/Error";
+
+let result = try {
+  let raw = await ledger.icrc1_transfer(args);
+  Transfer.mapResult(raw);
+} catch (e) {
+  TransactionRepo.remove(store, transferId);
+  return Result.err(
+    Result.badRequest,
+    "Ledger call failed: " # Error.message(e),
+  );
 };
 ```
 
----
+Apply to balance reads and fee reads on critical paths too. On execute paths,
+clean up `#pending` rows inside `catch` before returning.
 
-## Ledger and inter-canister errors
-
-Map ledger variants to text — never leak raw blobs:
-
-```motoko
-switch (await LedgerClient.transfer(...)) {
-  case (#ok(blockIndex)) { #ok(blockIndex) };
-  case (#err(#InsufficientFunds { balance })) {
-    #err("Insufficient balance");
-  };
-  case (#err(e)) {
-    #err("Transfer failed: " # TransferError.describe(e));
-  };
-};
-```
-
-**Do not** add a pre-flight balance read before transfer — racy and wastes an
-async round (~2s + cycles). The ledger returns balance in `#InsufficientFunds`.
+Reference: `TransferService.execute` in `backend/src/services/TransferService.mo`.
 
 ---
 
 ## Rate limiting
 
 ```motoko
-if (not RateLimitService.allow(service.rateLimits, caller, Config.RATE_TRANSFER)) {
-  return #err(RateLimitService.message(Config.RATE_TRANSFER));
+if (not RateLimit.allow(service.rateLimit, caller, max, window)) {
+  return Result.err(Result.tooManyRequests, "Transfer rate limit exceeded");
 };
 ```
-
-Rate-limit maps are `transient` — reset on upgrade is acceptable.
 
 ---
 
@@ -220,11 +213,11 @@ Rate-limit maps are `transient` — reset on upgrade is acceptable.
 | OK to trap | Not OK |
 |---|---|
 | `assert false` in tests | Invalid username from user |
-| Unreachable `switch` arm after validation | Insufficient funds |
-| Programmer invariant (`Debug.trap("impossible")`) | Room not found |
-| Migration bug during upgrade (aborts upgrade) | Duplicate username |
+| Unreachable arm after validation | Insufficient funds |
+| Programmer invariant | Room / wallet not found |
 
-Motoko `try/catch` around traps is rare in this codebase — prefer `Result` types.
+`try/catch` is for **inter-canister call failures**, not for catching your own
+traps. Prefer `ApiResult` for expected failures.
 
 ---
 
@@ -232,41 +225,17 @@ Motoko `try/catch` around traps is rare in this codebase — prefer `Result` typ
 
 | Do | Don't |
 |---|---|
-| `"Username not found: @alice"` | `"Error 404"` |
-| `"Amount must be greater than zero"` | `"invalid"` |
-| `"Not in this room"` | `"fail"` |
-| `"Transfer failed: " # describe(e)` | Raw variant debug print |
-| Stable messages (frontend may match) | Changing text without frontend update |
-
-Keep messages short, user-facing, no stack traces, no internal ids unless useful.
+| `"Wallet not registered"` | `"Error 404"` |
+| `"Transfer in flight"` | `"fail"` |
+| `"Ledger call failed: " # Error.message(e)` | Raw debug prints |
+| Stable messages when frontend matches on text | Silent text changes |
 
 ---
 
 ## Frontend contract
 
-TypeScript unwraps in `frontend/services/client.ts`:
-
-```typescript
-export type Outcome<T> = { ok: T } | { err: string }
-export function unwrap<T>(outcome: Outcome<T>): T {
-  if ("err" in outcome) throw new Error(outcome.err)
-  return outcome.ok
-}
-```
-
-Candid maps `#ok` / `#err` to variant. Frontend shows `Error.message` to users.
-
----
-
-## Query vs update errors
-
-| Call type | Cost | Errors |
-|---|---|---|
-| `shared query` | Free | Same `ApiResult` shape when auth needed |
-| `shared` (update) | Cycles | Same — never trap for validation |
-
-Live signaling: `postLiveSignal` is update; validation failures return `#err`,
-not trap.
+Candid maps `#ok` / `#err` to a variant. TypeScript checks `data.ok` / `data.err`
+in `frontend/services/client.ts` and `call()` helpers.
 
 ---
 
@@ -274,11 +243,14 @@ not trap.
 
 - [ ] Service returns `Types.ApiResult<T>` for all failure paths
 - [ ] Input validated via `validators/` (`?Text`)
-- [ ] Auth via `caller` + `requireUser` / `requireOwner`
+- [ ] `Caller.requireAuth` on mutating endpoints (reject anonymous)
+- [ ] `caller` from middleware — not user-supplied principal on fund paths
 - [ ] Rate limit if mutating user action
-- [ ] Ledger errors mapped with `TransferError.describe`
-- [ ] API mixin only delegates — no extra logic
-- [ ] Test covers at least one `#err` path in `backend/testing/`
+- [ ] Ledger variant errors mapped (`Transfer.mapResult`, etc.)
+- [ ] **`try/catch` around `await` ledger / inter-canister calls** (`#call_error`)
+- [ ] `#pending` row removed on transfer failure or `catch`
+- [ ] API mixin only delegates
+- [ ] Test at least one `#err` path in `backend/testing/`
 
 ---
 
@@ -286,7 +258,8 @@ not trap.
 
 | Topic | Path |
 |---|---|
-| Layering | [`skills/layeringStandard/SKILL.md`](../layeringStandard/SKILL.md) |
-| Adding endpoints | [`skills/endpointsStandard/SKILL.md`](../endpointsStandard/SKILL.md) |
-| Testing | [`skills/motokoStandard/testingMotokoStandard/SKILL.md`](../motokoStandard/testingMotokoStandard/SKILL.md) |
-| Cycles (query vs update) | [`skills/motokoStandard/cyclesAndCostStandard/SKILL.md`](../motokoStandard/cyclesAndCostStandard/SKILL.md) |
+| Layering | [`layeringStandard/SKILL.md`](../layeringStandard/SKILL.md) |
+| Endpoints | [`endpointsStandard/SKILL.md`](../endpointsStandard/SKILL.md) |
+| Ledger hazards | [`motokoStandard/ledgerIntegrationStandard/SKILL.md`](../motokoStandard/ledgerIntegrationStandard/SKILL.md) |
+| Option / `??` | [`motokoStandard/writingMotokoStandard/SKILL.md`](../motokoStandard/writingMotokoStandard/SKILL.md) |
+| Testing | [`testingStandard/SKILL.md`](../testingStandard/SKILL.md) |

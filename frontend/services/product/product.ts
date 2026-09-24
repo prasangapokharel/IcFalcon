@@ -1,4 +1,4 @@
-import type { Identity } from "@dfinity/agent"
+import type { Identity } from "@icp-sdk/core/agent"
 import { call } from "@/services/client"
 
 export type Product = { id: string; name: string }

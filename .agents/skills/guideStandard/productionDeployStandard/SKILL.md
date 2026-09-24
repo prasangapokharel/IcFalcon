@@ -28,7 +28,8 @@ Detail docs: [`motokoStandard/deployGuideStandard/`](../../motokoStandard/deploy
 - [ ] Stable shape changes wired — [`migration/SKILL.md`](../../migrationStandard/SKILL.md)
 - [ ] Migration tested: write → upgrade → read (if schema changed)
 - [ ] `frontend/services/idl.ts` synced if API changed
-- [ ] Identity has controller access and enough cycles
+- [ ] Identity has controller access (`dfx identity get-principal` added in ICPay) — [`icpayControllerStandard`](../../icpayControllerStandard/SKILL.md)
+- [ ] Enough cycles in canister / wallet
 - [ ] `falcon b:hash` recorded before upgrade (not fresh install)
 
 ---
@@ -125,6 +126,7 @@ falcon b:test → falcon b:hash → falcon p:check → falcon b:deploy → falco
 
 | Topic | Path |
 |---|---|
+| ICPay controllers | [`icpayControllerStandard/SKILL.md`](../../icpayControllerStandard/SKILL.md) |
 | Local deploy | [`localDeployStandard/SKILL.md`](../localDeployStandard/SKILL.md) |
 | Project setup | [`projectSetupStandard/SKILL.md`](../projectSetupStandard/SKILL.md) |
 | Release checklist | [`releaseStandard/SKILL.md`](../releaseStandard/SKILL.md) |

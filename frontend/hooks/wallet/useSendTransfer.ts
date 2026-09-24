@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import type { Identity } from "@dfinity/agent"
+import type { Identity } from "@icp-sdk/core/agent"
 import { executeTransfer, parseTokenAmount, proposeTransfer } from "@/services/wallet/wallet"
 
 export function useSendTransfer(identity: Identity | undefined, decimals = 8) {

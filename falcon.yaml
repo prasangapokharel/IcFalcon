@@ -33,7 +33,7 @@ commands:
     confirm: true
     steps:
       - dfx build {{canister}} {{network}}
-      - dfx deploy {{canister}} --mode=upgrade {{network}}
+      - dfx deploy {{canister}} --mode=upgrade --wasm-memory-persistence keep {{network}}
 
   backend:hash:
     confirm: false
@@ -50,7 +50,7 @@ commands:
     confirm: true
     steps:
       - dfx build {{canister}} {{network}}
-      - dfx deploy {{canister}} --mode=upgrade {{network}}
+      - dfx deploy {{canister}} --mode=upgrade --wasm-memory-persistence keep {{network}}
       - npm run build --prefix frontend
 
   prod:check:

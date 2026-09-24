@@ -140,6 +140,7 @@ Frontend detail skills: [`frontend/.agents/SKILLS.md`](../frontend/.agents/SKILL
 | Project setup | [`guideStandard/projectSetupStandard/SKILL.md`](skills/guideStandard/projectSetupStandard/SKILL.md) |
 | Local deploy | [`guideStandard/localDeployStandard/SKILL.md`](skills/guideStandard/localDeployStandard/SKILL.md) |
 | Production deploy | [`guideStandard/productionDeployStandard/SKILL.md`](skills/guideStandard/productionDeployStandard/SKILL.md) |
+| ICPay canister controllers | [`icpayControllerStandard/SKILL.md`](skills/icpayControllerStandard/SKILL.md) |
 | Release | [`guideStandard/releaseStandard/SKILL.md`](skills/guideStandard/releaseStandard/SKILL.md) |
 | Deploy reference | [`motokoStandard/deployGuideStandard/SKILL.md`](skills/motokoStandard/deployGuideStandard/SKILL.md) |
 | Falcon CLI | [`ops/docs/commands.md`](../ops/docs/commands.md) |
@@ -158,13 +159,14 @@ Frontend detail skills: [`frontend/.agents/SKILLS.md`](../frontend/.agents/SKILL
 
 ---
 
-## Complete index (48 skills)
+## Complete index (49 skills)
 
 ```
 .agents/skills/
 ├── codingStandard/          errorHandlingStandard/   layeringStandard/
 ├── migrationStandard/       testingStandard/         integrationStandard/
 ├── endpointsStandard/     frontendStandard/        logoStandard/
+├── icpayControllerStandard/
 ├── financeStandard/
 │   ├── walletStandard/      transferStandard/        transactionStandard/
 ├── guideStandard/

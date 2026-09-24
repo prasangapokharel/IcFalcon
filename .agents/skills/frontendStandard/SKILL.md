@@ -133,7 +133,7 @@ Shared root:
 Per feature (`falcon m:f` scaffolds `services/<name>/<name>.ts`):
 
 ```typescript
-import type { Identity } from "@dfinity/agent"
+import type { Identity } from "@icp-sdk/core/agent"
 import { call } from "@/services/client"
 
 export function createOrder(identity: Identity | undefined, name: string) {
@@ -172,7 +172,7 @@ SWR reference: [`frontend/.agents/skills/swrOfficialStandard/SKILL.md`](../../..
 
 Pure helpers. Import: `@/lib/<feature>/<file>` or `@/lib/utils` for `cn`.
 
-No React, no `@dfinity/*`, no SWR.
+No React, no `@icp-sdk/*`, no SWR.
 
 ---
 

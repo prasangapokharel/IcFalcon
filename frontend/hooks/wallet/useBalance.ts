@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import type { Identity } from "@dfinity/agent"
+import type { Identity } from "@icp-sdk/core/agent"
 import { formatTokenAmount, loadBalance, type WalletBalance } from "@/services/wallet/wallet"
 
 export function useBalance(identity: Identity | undefined) {

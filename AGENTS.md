@@ -68,6 +68,7 @@ falcon p:check --local      # skills + backend + frontend build
 | Project setup | `.agents/skills/guideStandard/projectSetupStandard/SKILL.md` |
 | Local deploy | `.agents/skills/guideStandard/localDeployStandard/SKILL.md` |
 | Production deploy | `.agents/skills/guideStandard/productionDeployStandard/SKILL.md` |
+| ICPay controllers | `.agents/skills/icpayControllerStandard/SKILL.md` |
 | Release | `.agents/skills/guideStandard/releaseStandard/SKILL.md` |
 | Deploy reference | `.agents/skills/motokoStandard/deployGuideStandard/SKILL.md` |
 | Frontend | `.agents/skills/frontendStandard/SKILL.md` |
@@ -118,6 +119,7 @@ Reference implementation (Phase 3): [docs/phase/3/PLAN.md](docs/phase/3/PLAN.md)
 ├── endpointsStandard/
 ├── frontendStandard/
 ├── logoStandard/
+├── icpayControllerStandard/
 ├── extensionsStandard/
 │   ├── openAiStandard/
 │   ├── objectStorageStandard/

@@ -218,6 +218,20 @@ run_command() {
   export FALCON_CANISTER="$(yaml_value canister)"
   export FALCON_NETWORK="$network_flag"
 
+  if command -v mops >/dev/null 2>&1; then
+    local moc_bin
+    moc_bin="$(mops toolchain bin moc 2>/dev/null || true)"
+    if [[ -n "$moc_bin" && -x "$moc_bin" ]]; then
+      local moc_dir
+      moc_dir="$(dirname "$moc_bin")"
+      export PATH="$moc_dir:$PATH"
+      export DFX_MOC_PATH="$moc_bin"
+      ln -sf "$moc_bin" "$moc_dir/moc-wrapper" 2>/dev/null || true
+    fi
+  fi
+
+  export DFX_WARNING="${DFX_WARNING:--mainnet_plaintext_identity}"
+
   if [[ -n "$script" ]]; then
     local script_path="$ROOT/$script"
     [[ -x "$script_path" || -f "$script_path" ]] || fail "script not found: $script_path"
@@ -267,7 +281,7 @@ main() {
     fi
   done
 
-  local network_flag=""
+  local network_flag="--network ic"
   if $local_flag; then
     network_flag="--network local"
   fi

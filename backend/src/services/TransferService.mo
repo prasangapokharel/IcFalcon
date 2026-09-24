@@ -1,4 +1,5 @@
 import Caller "mo:pkg/principal/caller";
+import Error "mo:core/Error";
 import Icrc1 "mo:pkg/icrc1/icrc1";
 import Principal "mo:core/Principal";
 import RateLimit "mo:pkg/rate-limit/limit";
@@ -151,10 +152,15 @@ module {
       };
       case (?value) value;
     };
-    let balance = await service.ledger.icrc1_balance_of(
-      Wallet.toIcrcAccount(built.req.from),
-    );
-    let fee = await service.ledger.icrc1_fee();
+    let (balance, fee) = try {
+      let b = await service.ledger.icrc1_balance_of(
+        Wallet.toIcrcAccount(built.req.from),
+      );
+      let f = await service.ledger.icrc1_fee();
+      (b, f);
+    } catch (e) {
+      return Result.err(Result.badRequest, "Ledger call failed: " # Error.message(e));
+    };
     switch (Transfer.validateRequest(built.req, balance, fee)) {
       case (?message) { return Result.err(Result.badRequest, message) };
       case (null) {};
@@ -194,10 +200,15 @@ module {
       case (?value) value;
     };
 
-    let balance = await service.ledger.icrc1_balance_of(
-      Wallet.toIcrcAccount(built.req.from),
-    );
-    let fee = await service.ledger.icrc1_fee();
+    let (balance, fee) = try {
+      let b = await service.ledger.icrc1_balance_of(
+        Wallet.toIcrcAccount(built.req.from),
+      );
+      let f = await service.ledger.icrc1_fee();
+      (b, f);
+    } catch (e) {
+      return Result.err(Result.badRequest, "Ledger call failed: " # Error.message(e));
+    };
     switch (Transfer.validateRequest(built.req, balance, fee)) {
       case (?message) { return Result.err(Result.badRequest, message) };
       case (null) {};
@@ -218,8 +229,13 @@ module {
       memo = null;
     });
 
-    let raw = await service.ledger.icrc1_transfer(Transfer.buildTransferArgs(built.req, fee));
-    let result = Transfer.mapResult(raw);
+    let result = try {
+      let raw = await service.ledger.icrc1_transfer(Transfer.buildTransferArgs(built.req, fee));
+      Transfer.mapResult(raw);
+    } catch (e) {
+      TransactionRepo.remove(service.txStore, transferId);
+      return Result.err(Result.badRequest, "Ledger call failed: " # Error.message(e));
+    };
 
     switch (result) {
       case (#err({ message })) {

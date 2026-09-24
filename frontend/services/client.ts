@@ -1,5 +1,5 @@
-import { Actor, HttpAgent } from "@dfinity/agent"
-import type { Identity } from "@dfinity/agent"
+import { Actor, HttpAgent } from "@icp-sdk/core/agent"
+import type { Identity } from "@icp-sdk/core/agent"
 import { idlFactory } from "@/services/idl"
 import { canisterId, host } from "@/services/icp"
 

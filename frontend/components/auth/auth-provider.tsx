@@ -1,7 +1,7 @@
 "use client"
 
-import { AuthClient } from "@dfinity/auth-client"
-import type { Identity } from "@dfinity/agent"
+import { AuthClient } from "@icp-sdk/auth/client"
+import type { Identity } from "@icp-sdk/core/agent"
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { iiUrl } from "@/services/icp"
 
@@ -21,31 +21,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    AuthClient.create().then((authClient) => {
-      setClient(authClient)
-      setIdentity(authClient.getIdentity())
+    const authClient = new AuthClient({ identityProvider: iiUrl })
+    setClient(authClient)
+    if (authClient.isAuthenticated()) {
+      authClient
+        .getIdentity()
+        .then((id) => {
+          setIdentity(id)
+          setReady(true)
+        })
+        .catch(() => {
+          setIdentity(undefined)
+          setReady(true)
+        })
+    } else {
+      setIdentity(undefined)
       setReady(true)
-    })
+    }
   }, [])
 
   const login = useCallback(async () => {
     if (!client) return
-    await client.login({
-      identityProvider: iiUrl,
-      onSuccess: () => setIdentity(client.getIdentity()),
-    })
+    try {
+      const id = await client.signIn()
+      setIdentity(id)
+    } catch {
+      // login cancelled or failed
+    }
   }, [client])
 
   const logout = useCallback(async () => {
     if (!client) return
-    await client.logout()
+    await client.signOut()
     setIdentity(undefined)
   }, [client])
 
   const value = useMemo<AuthState>(
     () => ({
       identity,
-      principal: identity?.getPrincipal().toText() ?? "",
+      principal: identity && !identity.getPrincipal().isAnonymous() ? identity.getPrincipal().toText() : "",
       ready,
       login,
       logout,
