@@ -2,13 +2,15 @@
 
 All notable changes to IcFalcon are documented here.
 
-## [0.1.9] - 2026-09-24
+## [0.2.0] - 2026-09-24
 
 ### Added
 
+- `icpsdkStandard` skill (`.agents/skills/icpsdkStandard/SKILL.md`) covering complete `@icp-sdk/core`, `@icp-sdk/auth`, and `@icp-sdk/signer` ecosystem
 - `icpayControllerStandard` skill (`.agents/skills/icpayControllerStandard/SKILL.md`) for managing canister controllers via ICPay (icpay.app)
 - Automated `mops` toolchain `moc` resolution in `ops/falcon` and `backend/scripts/run-tests.sh`
 - Support for `--wasm-memory-persistence keep` on upgrade deploys for Motoko enhanced orthogonal persistence
+- Official framework homepage linked at https://icpay.app/icfalcon
 
 ### Changed
 
