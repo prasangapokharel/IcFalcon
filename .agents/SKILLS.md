@@ -79,6 +79,7 @@ Hub packages: `subaccount`, `ledger`, `icrc1`, `icrc2`, `wallet`, `transfer`, `t
 | New feature (full checklist) | [`integrationStandard/SKILL.md`](skills/integrationStandard/SKILL.md) |
 | Scaffold module | `falcon m:f <Name>` + integrationStandard |
 | Frontend | [`frontendStandard/SKILL.md`](skills/frontendStandard/SKILL.md) |
+| @icp-sdk (agent, auth, signers) | [`icpsdkStandard/SKILL.md`](skills/icpsdkStandard/SKILL.md) |
 | Logo / favicon | [`logoStandard/SKILL.md`](skills/logoStandard/SKILL.md) |
 
 Frontend detail skills: [`frontend/.agents/SKILLS.md`](../frontend/.agents/SKILLS.md).
@@ -159,14 +160,14 @@ Frontend detail skills: [`frontend/.agents/SKILLS.md`](../frontend/.agents/SKILL
 
 ---
 
-## Complete index (49 skills)
+## Complete index (50 skills)
 
 ```
 .agents/skills/
 ├── codingStandard/          errorHandlingStandard/   layeringStandard/
 ├── migrationStandard/       testingStandard/         integrationStandard/
 ├── endpointsStandard/     frontendStandard/        logoStandard/
-├── icpayControllerStandard/
+├── icpayControllerStandard/ icpsdkStandard/
 ├── financeStandard/
 │   ├── walletStandard/      transferStandard/        transactionStandard/
 ├── guideStandard/

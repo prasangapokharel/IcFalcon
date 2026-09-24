@@ -72,6 +72,7 @@ falcon p:check --local      # skills + backend + frontend build
 | Release | `.agents/skills/guideStandard/releaseStandard/SKILL.md` |
 | Deploy reference | `.agents/skills/motokoStandard/deployGuideStandard/SKILL.md` |
 | Frontend | `.agents/skills/frontendStandard/SKILL.md` |
+| @icp-sdk | `.agents/skills/icpsdkStandard/SKILL.md` |
 | **Wallet demo (Phase 3)** | `/wallet` — [`docs/phase/3/PLAN.md`](docs/phase/3/PLAN.md) |
 | Logo / brand | `.agents/skills/logoStandard/SKILL.md` |
 | II auth | `.agents/skills/motokoStandard/internetIdentityAuthStandard/SKILL.md` |
@@ -120,6 +121,7 @@ Reference implementation (Phase 3): [docs/phase/3/PLAN.md](docs/phase/3/PLAN.md)
 ├── frontendStandard/
 ├── logoStandard/
 ├── icpayControllerStandard/
+├── icpsdkStandard/
 ├── extensionsStandard/
 │   ├── openAiStandard/
 │   ├── objectStorageStandard/
