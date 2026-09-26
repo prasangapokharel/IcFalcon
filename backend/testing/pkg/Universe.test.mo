@@ -59,6 +59,38 @@ module {
       return ?("Expected 0 subscribers for user.created, got " # debug_show(targets3.size()));
     };
 
+    // 4. Test Outbox pending, acknowledge, and popNext
+    let pendingBefore = Universe.pendingEvents(node);
+    if (pendingBefore.size() != 2) {
+      return ?("Expected 2 pending events, got " # debug_show(pendingBefore.size()));
+    };
+
+    let ackResult = Universe.acknowledgeEvent(node, "evt-1");
+    if (not ackResult) {
+      return ?("Expected acknowledgeEvent(evt-1) to succeed");
+    };
+
+    let pendingAfter = Universe.pendingEvents(node);
+    if (pendingAfter.size() != 1) {
+      return ?("Expected 1 pending event after ack, got " # debug_show(pendingAfter.size()));
+    };
+
+    let nextEvt = Universe.popNextEvent(node);
+    switch (nextEvt) {
+      case null { return ?("Expected popNextEvent to return evt-2"); };
+      case (?ev) {
+        if (ev.id != "evt-2") {
+          return ?("Expected popNextEvent to be evt-2, got " # ev.id);
+        };
+      };
+    };
+
+    let emptyNow = Universe.popNextEvent(node);
+    switch (emptyNow) {
+      case (?ev) { return ?("Expected outbox to be empty now, got " # ev.id); };
+      case null ();
+    };
+
     null;
   };
 };

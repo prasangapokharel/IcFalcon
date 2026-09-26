@@ -70,4 +70,16 @@ module {
   public func routeSubscribers(node : Node, topic : Topic) : [Subscription] {
     Broker.subscribersFor(node.broker, topic);
   };
+
+  public func acknowledgeEvent(node : Node, id : EventId) : Bool {
+    Outbox.acknowledge(node.outbox, id);
+  };
+
+  public func pendingEvents(node : Node) : [Event] {
+    Outbox.pending(node.outbox);
+  };
+
+  public func popNextEvent(node : Node) : ?Event {
+    Outbox.popNext(node.outbox);
+  };
 };

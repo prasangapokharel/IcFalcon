@@ -1,18 +1,24 @@
-import Array "mo:core/Array";
 import Principal "mo:core/Principal";
+import Queue "mo:core/Queue";
+import Time "mo:core/Time";
+import Timer "mo:core/Timer";
 import Types "./types";
 
 module {
+  public type FlushCallback = () -> async ();
+
   public type Outbox = {
-    var queue : [Types.Event];
+    var queue : Queue.Queue<Types.Event>;
     var seqCounter : Nat;
+    var heartbeatTimerId : ?Timer.TimerId;
     source : Principal;
   };
 
   public func create(source : Principal) : Outbox {
     {
-      var queue = [];
+      var queue = Queue.empty<Types.Event>();
       var seqCounter = 0;
+      var heartbeatTimerId = null;
       source;
     };
   };
@@ -35,42 +41,78 @@ module {
       payload;
       correlationId;
     };
-    outbox.queue := Array.concat<Types.Event>(outbox.queue, [event]);
+    Queue.pushBack(outbox.queue, event);
     event;
   };
 
   public func pending(outbox : Outbox) : [Types.Event] {
-    outbox.queue;
+    Queue.toArray(outbox.queue);
   };
 
   public func acknowledge(outbox : Outbox, id : Types.EventId) : Bool {
     var found = false;
-    var remaining : [Types.Event] = [];
-    var i = 0;
-    while (i < outbox.queue.size()) {
-      let item = outbox.queue[i];
+    let newQueue = Queue.empty<Types.Event>();
+    for (item in Queue.values(outbox.queue)) {
       if (item.id == id and not found) {
         found := true;
       } else {
-        remaining := Array.concat<Types.Event>(remaining, [item]);
+        Queue.pushBack(newQueue, item);
       };
-      i += 1;
     };
     if (found) {
-      outbox.queue := remaining;
+      outbox.queue := newQueue;
     };
     found;
   };
 
+  public func popNext(outbox : Outbox) : ?Types.Event {
+    Queue.popFront(outbox.queue);
+  };
+
   public func clear(outbox : Outbox) : () {
-    outbox.queue := [];
+    Queue.clear(outbox.queue);
   };
 
   public func pendingCount(outbox : Outbox) : Nat {
-    outbox.queue.size();
+    Queue.size(outbox.queue);
   };
 
   public func nextSequence(outbox : Outbox) : Nat {
     outbox.seqCounter + 1;
   };
+
+  public func scheduleFlush<system>(
+    outbox : Outbox,
+    delay : Time.Duration,
+    flushFn : FlushCallback,
+  ) : Timer.TimerId {
+    let timerId = Timer.setTimer<system>(delay, flushFn);
+    outbox.heartbeatTimerId := ?timerId;
+    timerId;
+  };
+
+  public func startHeartbeat<system>(
+    outbox : Outbox,
+    interval : Time.Duration,
+    flushFn : FlushCallback,
+  ) : Timer.TimerId {
+    let timerId = Timer.recurringTimer<system>(interval, flushFn);
+    outbox.heartbeatTimerId := ?timerId;
+    timerId;
+  };
+
+  public func cancelTimer(outbox : Outbox) : () {
+    switch (outbox.heartbeatTimerId) {
+      case (?id) {
+        Timer.cancelTimer(id);
+        outbox.heartbeatTimerId := null;
+      };
+      case null ();
+    };
+  };
+
+  public func activeTimerId(outbox : Outbox) : ?Timer.TimerId {
+    outbox.heartbeatTimerId;
+  };
 };
+
