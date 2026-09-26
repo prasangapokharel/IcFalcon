@@ -161,11 +161,20 @@ Reference implementation (Phase 3): [docs/phase/3/PLAN.md](docs/phase/3/PLAN.md)
 
 ## Docs
 
-| File | Contents |
+Read [`ops/docs/`](ops/docs/README.md) for full project and architecture documentation.
+
+| Document | Contents |
 |---|---|
-| [ops/README.md](ops/README.md) | Ops folder structure |
-| [ops/docs/commands.md](ops/docs/commands.md) | Full `falcon` command reference |
-| [ops/templates/feature/](ops/templates/feature/) | `falcon m:f` templates |
+| [ops/docs/README.md](ops/docs/README.md) | Documentation index & framework overview |
+| [ops/docs/commands.md](ops/docs/commands.md) | Full `falcon` CLI reference & aliases |
+| [ops/docs/architecture.md](ops/docs/architecture.md) | 4-tier Motoko architecture & persistent memory |
+| [ops/docs/universe.md](ops/docs/universe.md) | Falcon Universe multi-canister event mesh ("Kafka for Motoko") |
+| [ops/docs/audit.md](ops/docs/audit.md) | Motoko code validator & linter (`falcon audit code:motoko`) |
+| [ops/docs/packages.md](ops/docs/packages.md) | `icp-hub` packages (`falcon add pkg`), registry list |
+| [ops/docs/finance.md](ops/docs/finance.md) | Money layer: ICPay, subaccounts, ICRC-1/2, custodial wallets |
+| [ops/docs/frontend.md](ops/docs/frontend.md) | Next.js frontend with `@icp-sdk/core` & `@icp-sdk/auth` |
+| [ops/README.md](ops/README.md) | Ops folder structure & tooling |
+| [ops/templates/feature/](ops/templates/feature/) | `falcon m:f` scaffold templates |
 
 ## Safety
 

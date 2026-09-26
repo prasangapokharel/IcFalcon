@@ -21,7 +21,14 @@ ops/
 │   ├── feature/        # falcon m:f templates
 │   └── command.example.sh
 └── docs/
-    └── commands.md     # full falcon command reference
+    ├── README.md           # documentation index & framework overview
+    ├── commands.md         # full falcon command reference
+    ├── architecture.md     # 4-tier Motoko architecture & persistent memory
+    ├── universe.md         # Falcon Universe multi-canister event mesh
+    ├── audit.md            # Motoko code validator & linter
+    ├── packages.md         # icp-hub package ecosystem
+    ├── finance.md          # money layer, subaccounts & ICPay
+    └── frontend.md         # Next.js frontend with @icp-sdk
 ```
 
 ## Root layout (clean)
