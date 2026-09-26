@@ -255,6 +255,8 @@ Rules while splitting:
 ## Verify before PR
 
 ```bash
+falcon audit code:motoko    # audit formatting, layering, and syntax (or: falcon a:c:m)
+falcon audit code:motoko --fix  # auto-fix whitespace & line-endings
 cd backend && bash scripts/run-tests.sh
 cd backend && dfx build icp_wallet_backend --check --network ic
 ```

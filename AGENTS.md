@@ -49,7 +49,8 @@ Read [`.agents/SKILLS.md`](.agents/SKILLS.md) first — layered router (Foundati
 
 ```bash
 falcon sk:validate          # skills structure + links
-falcon p:check --local      # skills + backend + frontend build
+falcon audit code:motoko    # Motoko code style, layering & syntax (or: falcon a:c:m)
+falcon p:check --local      # skills + code audit + backend + frontend build
 ```
 
 ### Core tasks
@@ -58,6 +59,7 @@ falcon p:check --local      # skills + backend + frontend build
 |---|---|
 | New feature | `.agents/skills/integrationStandard/SKILL.md` |
 | Scaffold CLI | `falcon m:f <Name>` |
+| Code audit / linter | `falcon audit code:motoko` / `falcon a:c:m` |
 | Layer rules | `.agents/skills/layeringStandard/SKILL.md` |
 | Multi-canister mesh | `.agents/skills/falconUniverseStandard/SKILL.md` |
 | Code style | `.agents/skills/codingStandard/SKILL.md` |

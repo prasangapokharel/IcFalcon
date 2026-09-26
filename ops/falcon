@@ -64,6 +64,10 @@ ${GREEN}Production${NC}
   p:check         Validate skills + build backend + frontend
   p:ship          Deploy backend + build frontend
 
+${GREEN}Audit${NC} ${DIM}(black/flake8 style)${NC}
+  audit code:motoko   Audit Motoko code style, layering & syntax
+  a:c:m               Short alias
+
 ${GREEN}Skills${NC}
   sk:validate     Validate .agents/skills structure (CI)
 
@@ -315,6 +319,14 @@ main() {
       step "pkg:add $pkg_name"
       bash "$ROOT/ops/pkg-add.sh" "$pkg_name"
       exit 0
+      ;;
+    audit)
+      if [[ "${filtered_args[0]:-}" == "code:motoko" || "${filtered_args[0]:-}" == "motoko" ]]; then
+        command="audit:motoko"
+        filtered_args=("${filtered_args[@]:1}")
+      else
+        command="audit:motoko"
+      fi
       ;;
   esac
 
