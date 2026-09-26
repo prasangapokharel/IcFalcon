@@ -2,6 +2,19 @@
 
 All notable changes to IcFalcon are documented here.
 
+## [0.2.1] - 2026-09-26
+
+### Added
+
+- Motoko Code Validator & Linter (`ops/scripts/code/motoko/validate-code.sh` and `ops/scripts/motoko-validator.sh`)
+- `falcon audit code:motoko` and `falcon a:c:m` commands with auto-formatting (`--fix`) for trailing whitespace, CRLF, and EOF newlines
+- Motoko code auditing integrated into production pre-flight checks (`falcon p:check`)
+- `falconUniverseStandard` skill (`.agents/skills/falconUniverseStandard/SKILL.md`) for event-driven multi-canister architecture ("Kafka for Motoko")
+- `pkg/universe` package with transactional outbox, idempotent inbox sliding-window deduplication, and wildcard topic broker
+- High-throughput `mo:core/Queue` doubly-linked list backing for event outbox queue
+- Timer heartbeat integration (`Timer.setTimer` & `Timer.recurringTimer`) for automatic event flushing
+- Published `universe` package to the `icp-hub` registry
+
 ## [0.2.0] - 2026-09-24
 
 ### Added
