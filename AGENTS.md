@@ -59,6 +59,7 @@ falcon p:check --local      # skills + backend + frontend build
 | New feature | `.agents/skills/integrationStandard/SKILL.md` |
 | Scaffold CLI | `falcon m:f <Name>` |
 | Layer rules | `.agents/skills/layeringStandard/SKILL.md` |
+| Multi-canister mesh | `.agents/skills/falconUniverseStandard/SKILL.md` |
 | Code style | `.agents/skills/codingStandard/SKILL.md` |
 | Errors | `.agents/skills/errorHandlingStandard/SKILL.md` |
 | Migrations | `.agents/skills/migrationStandard/SKILL.md` |
@@ -122,6 +123,7 @@ Reference implementation (Phase 3): [docs/phase/3/PLAN.md](docs/phase/3/PLAN.md)
 ├── logoStandard/
 ├── icpayControllerStandard/
 ├── icpsdkStandard/
+├── falconUniverseStandard/
 ├── extensionsStandard/
 │   ├── openAiStandard/
 │   ├── objectStorageStandard/

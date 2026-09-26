@@ -55,6 +55,7 @@ Also runs as the first step of `falcon p:check`.
 | Run tests | [`testingStandard/SKILL.md`](skills/testingStandard/SKILL.md) |
 | Write Motoko | [`motokoStandard/writingMotokoStandard/SKILL.md`](skills/motokoStandard/writingMotokoStandard/SKILL.md) |
 | API endpoints | [`endpoints/SKILL.md`](skills/endpointsStandard/SKILL.md) |
+| Multi-canister event mesh | [`falconUniverseStandard/SKILL.md`](skills/falconUniverseStandard/SKILL.md) |
 
 ---
 
@@ -160,14 +161,14 @@ Frontend detail skills: [`frontend/.agents/SKILLS.md`](../frontend/.agents/SKILL
 
 ---
 
-## Complete index (50 skills)
+## Complete index (51 skills)
 
 ```
 .agents/skills/
 ├── codingStandard/          errorHandlingStandard/   layeringStandard/
 ├── migrationStandard/       testingStandard/         integrationStandard/
 ├── endpointsStandard/     frontendStandard/        logoStandard/
-├── icpayControllerStandard/ icpsdkStandard/
+├── icpayControllerStandard/ icpsdkStandard/          falconUniverseStandard/
 ├── financeStandard/
 │   ├── walletStandard/      transferStandard/        transactionStandard/
 ├── guideStandard/

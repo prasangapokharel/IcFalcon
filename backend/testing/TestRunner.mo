@@ -4,6 +4,7 @@ import LedgerTruthTest "pkg/LedgerTruth.test";
 import MoneyTest "pkg/Money.test";
 import TransactionTest "pkg/Transaction.test";
 import TransferTest "pkg/Transfer.test";
+import UniverseTest "pkg/Universe.test";
 import WalletTest "services/WalletService.test";
 
 persistent actor TestRunner {
@@ -22,6 +23,7 @@ persistent actor TestRunner {
     runSync("Transfer.test", TransferTest.run);
     runSync("Transaction.test", TransactionTest.run);
     runSync("LedgerTruth.test", LedgerTruthTest.run);
+    runSync("Universe.test", UniverseTest.run);
 
     let walletSuite = await WalletTest.Suite();
     switch (await walletSuite.run()) {
